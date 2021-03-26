@@ -1,6 +1,6 @@
 > TODO
 
-[![Build Status](https://github.com/transitive-bullshit/clubhouse-graph/actions/workflows/build.yml/badge.svg)](https://github.com/transitive-bullshit/clubhouse-graph/actions/workflows/build.yml) [![Prettier Code Formatting](https://img.shields.io/badge/code_style-prettier-brightgreen.svg)](https://prettier.io)
+[![Build Status](https://github.com/senpai-so/clubhouse-social-graph/actions/workflows/build.yml/badge.svg)](https://github.com/senpai-so/clubhouse-social-graph/actions/workflows/build.yml) [![Prettier Code Formatting](https://img.shields.io/badge/code_style-prettier-brightgreen.svg)](https://prettier.io)
 
 ## Usage
 

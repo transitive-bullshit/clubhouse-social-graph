@@ -4,7 +4,7 @@
   "private": true,
   "description": "Clubhouse social graph visualizations.",
   "author": "Travis Fischer <travis@transitivebullsh.it>",
-  "repository": "senpai-so/senpai",
+  "repository": "senpai-so/clubhouse-social-graph",
   "license": "MIT",
   "engines": {
     "node": ">=12"
@@ -27,7 +27,7 @@
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
     "classnames": "^2.2.6",
-    "clubhouse-client": "link:../clubhouse-social-graph",
+    "clubhouse-client": "^0.1.1",
     "fathom-client": "^3.0.0",
     "framer-motion": "^4",
     "next": "^10.0.6",
