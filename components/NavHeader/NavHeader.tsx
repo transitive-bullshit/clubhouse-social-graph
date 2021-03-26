@@ -1,9 +1,14 @@
 import React from 'react'
 import Link from 'next/link'
+import { useDisclosure, Button } from '@chakra-ui/react'
+
+import { LoginModal } from 'components'
 
 import styles from './styles.module.css'
 
 export const NavHeader: React.FC = () => {
+  const { isOpen, onOpen, onClose } = useDisclosure()
+
   return (
     <header className={styles.header}>
       <div className={styles.content}>
@@ -19,11 +24,13 @@ export const NavHeader: React.FC = () => {
         </Link>
 
         <nav className={styles.nav}>
-          <Link href='/login'>
-            <a>Log in</a>
-          </Link>
+          <Button colorScheme='blue' onClick={onOpen}>
+            Log in
+          </Button>
         </nav>
       </div>
+
+      <LoginModal isOpen={isOpen} onClose={onClose} />
     </header>
   )
 }

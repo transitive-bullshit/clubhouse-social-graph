@@ -18,7 +18,7 @@ export default function HomePage() {
 
               <h2>
                 Cool visualizations of all your Clubhouse peeps, invite chain,
-                and follower graph.
+                and follower graph 🤙
               </h2>
             </div>
           </section>
