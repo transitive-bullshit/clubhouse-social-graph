@@ -13,11 +13,68 @@ import {
   ModalCloseButton
 } from '@chakra-ui/react'
 
+import { fetchClubhouseAPI } from 'lib/fetch-clubhouse-api'
+
 export const LoginModal: React.FC<{
   isOpen: boolean
   onClose: () => void
 }> = ({ isOpen, onClose }) => {
   const initialRef = React.useRef()
+  const [phoneNumber, setPhoneNumber] = React.useState('')
+  const [verificationCode, setVerificationCode] = React.useState('')
+  const [isLoading, setIsLoading] = React.useState(false)
+  const [state, setState] = React.useState('/start_phone_number_auth')
+  const [error, setError] = React.useState(null)
+
+  const onChangePhoneNumber = (event) => {
+    setPhoneNumber(event.target.value)
+  }
+  const onChangeVerificationCode = (event) => {
+    setVerificationCode(event.target.value)
+  }
+
+  const onSubmitPhoneNumber = React.useCallback(async () => {
+    setIsLoading(true)
+    setError(null)
+
+    const res = await fetchClubhouseAPI({
+      endpoint: '/start_phone_number_auth',
+      method: 'POST',
+      body: {
+        phone_number: phoneNumber
+      }
+    })
+
+    setIsLoading(false)
+    if (res.success) {
+      setError(null)
+      setState('/complete_phone_number_auth')
+    } else {
+      setError(res.error)
+    }
+  }, [phoneNumber])
+
+  const onSubmitVerificationCode = React.useCallback(async () => {
+    setIsLoading(true)
+    setError(null)
+
+    const res = await fetchClubhouseAPI({
+      endpoint: '/complete_phone_number_auth',
+      method: 'POST',
+      body: {
+        phone_number: phoneNumber,
+        verification_code: verificationCode
+      }
+    })
+
+    setIsLoading(false)
+    if (res.success) {
+      setError(null)
+      onClose()
+    } else {
+      setError(res.error)
+    }
+  }, [phoneNumber, verificationCode])
 
   return (
     <>
@@ -28,16 +85,54 @@ export const LoginModal: React.FC<{
           <ModalCloseButton />
 
           <ModalBody pb={6}>
-            <FormControl>
-              <FormLabel>Enter your phone number</FormLabel>
-              <Input ref={initialRef} placeholder='+15555555555' />
-            </FormControl>
+            {state === '/start_phone_number_auth' ? (
+              <FormControl>
+                <FormLabel>Enter your phone number</FormLabel>
+                <Input
+                  ref={initialRef}
+                  placeholder='+15555555555'
+                  value={phoneNumber}
+                  onChange={onChangePhoneNumber}
+                />
+              </FormControl>
+            ) : (
+              <FormControl>
+                <FormLabel>
+                  Enter the code that Clubhouse just texted you
+                </FormLabel>
+                <Input
+                  placeholder='----'
+                  value={verificationCode}
+                  onChange={onChangeVerificationCode}
+                />
+              </FormControl>
+            )}
+
+            {error && <p>{error}</p>}
           </ModalBody>
 
           <ModalFooter display='flex' justifyContent='space-between'>
             <Button onClick={onClose}>Cancel</Button>
 
-            <Button colorScheme='blue'>Next</Button>
+            {state === '/start_phone_number_auth' ? (
+              <Button
+                colorScheme='blue'
+                onClick={onSubmitPhoneNumber}
+                isLoading={isLoading}
+                disabled={!phoneNumber}
+              >
+                Next
+              </Button>
+            ) : (
+              <Button
+                colorScheme='blue'
+                onClick={onSubmitVerificationCode}
+                isLoading={isLoading}
+                disabled={!verificationCode}
+              >
+                Next
+              </Button>
+            )}
           </ModalFooter>
         </ModalContent>
       </Modal>
