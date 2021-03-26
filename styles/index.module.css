@@ -1,0 +1,29 @@
+.body {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+}
+
+.heroSection {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 80px);
+}
+
+.intro {
+  display: flex;
+  flex-direction: column;
+  max-width: var(--max-width);
+  text-align: center;
+}
+
+.intro h2 {
+  font-weight: 400;
+}
