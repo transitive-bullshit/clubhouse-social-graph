@@ -51,7 +51,10 @@ export default withSession(
 
       res.json(result)
     } catch (err) {
-      console.error('clubhouse API error', endpoint, err)
+      if (endpoint !== '/me') {
+        console.error('clubhouse API error', endpoint, err)
+      }
+
       res.status(err.code || 500).json({ error: err.message })
     }
   }

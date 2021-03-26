@@ -5,7 +5,8 @@ import { fetchClubhouseAPI } from 'lib/fetch-clubhouse-api'
 
 export function useUser() {
   const [user, setUser] = React.useState(null)
-  const isLoggedIn = user?.user_id
+  const [isLoading, setIsLoading] = React.useState(true)
+  const isLoggedIn = !!user?.user_id
 
   const updateUser = async () => {
     const res = await fetchClubhouseAPI({
@@ -15,8 +16,19 @@ export function useUser() {
     setUser(res.user_profile)
   }
 
+  const logout = async () => {
+    await fetchClubhouseAPI({
+      endpoint: '/logout'
+    })
+
+    setUser(null)
+  }
+
   React.useEffect(() => {
-    updateUser()
+    setIsLoading(true)
+    updateUser().then(() => {
+      setIsLoading(false)
+    })
 
     // If redirectTo is set, redirect if the user was not found.
     // if (redirectTo && !isLoggedIn) {
@@ -24,7 +36,7 @@ export function useUser() {
     // }
   }, [])
 
-  return { user, isLoggedIn, updateUser }
+  return { user, isLoggedIn, isLoading, updateUser, logout }
 }
 
 export const User = createContainer(useUser)
