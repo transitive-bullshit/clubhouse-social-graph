@@ -3,11 +3,14 @@ import Link from 'next/link'
 import { useDisclosure, Button } from '@chakra-ui/react'
 
 import { LoginModal } from 'components'
+import { User } from 'state/user'
 
 import styles from './styles.module.css'
 
 export const NavHeader: React.FC = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const loginModal = useDisclosure()
+  const { user, isLoggedIn } = User.useContainer()
+  console.log({ user, isLoggedIn })
 
   return (
     <header className={styles.header}>
@@ -24,13 +27,17 @@ export const NavHeader: React.FC = () => {
         </Link>
 
         <nav className={styles.nav}>
-          <Button colorScheme='blue' onClick={onOpen}>
-            Log in
-          </Button>
+          {!isLoggedIn && (
+            <Button colorScheme='blue' onClick={loginModal.onOpen}>
+              Log in
+            </Button>
+          )}
         </nav>
       </div>
 
-      <LoginModal isOpen={isOpen} onClose={onClose} />
+      {!isLoggedIn && loginModal.isOpen && (
+        <LoginModal isOpen={loginModal.isOpen} onClose={loginModal.onClose} />
+      )}
     </header>
   )
 }

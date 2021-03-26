@@ -1,11 +1,12 @@
 import React from 'react'
 
-import { NavHeader, Head } from '../components'
-import styles from '../styles/index.module.css'
+import { User } from 'state/user'
+import { NavHeader, Head } from 'components'
+import styles from 'styles/index.module.css'
 
 export default function HomePage() {
   return (
-    <>
+    <User.Provider>
       <Head />
 
       <div className={styles.body}>
@@ -24,6 +25,6 @@ export default function HomePage() {
           </section>
         </main>
       </div>
-    </>
+    </User.Provider>
   )
 }

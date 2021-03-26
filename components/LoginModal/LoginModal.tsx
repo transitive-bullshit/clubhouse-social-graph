@@ -14,6 +14,7 @@ import {
 } from '@chakra-ui/react'
 
 import { fetchClubhouseAPI } from 'lib/fetch-clubhouse-api'
+import { User } from 'state/user'
 
 export const LoginModal: React.FC<{
   isOpen: boolean
@@ -25,12 +26,25 @@ export const LoginModal: React.FC<{
   const [isLoading, setIsLoading] = React.useState(false)
   const [state, setState] = React.useState('/start_phone_number_auth')
   const [error, setError] = React.useState(null)
+  const { updateUser } = User.useContainer()
 
   const onChangePhoneNumber = (event) => {
     setPhoneNumber(event.target.value)
   }
   const onChangeVerificationCode = (event) => {
     setVerificationCode(event.target.value)
+  }
+
+  const onKeyPressPhoneNumber = (event) => {
+    if (event.charCode === 13) {
+      onSubmitPhoneNumber()
+    }
+  }
+
+  const onKeyPressVerificationCode = (event) => {
+    if (event.charCode === 13) {
+      onSubmitVerificationCode()
+    }
   }
 
   const onSubmitPhoneNumber = React.useCallback(async () => {
@@ -70,6 +84,7 @@ export const LoginModal: React.FC<{
     setIsLoading(false)
     if (res.success) {
       setError(null)
+      await updateUser()
       onClose()
     } else {
       setError(res.error)
@@ -92,7 +107,9 @@ export const LoginModal: React.FC<{
                   ref={initialRef}
                   placeholder='+15555555555'
                   value={phoneNumber}
+                  isRequired={true}
                   onChange={onChangePhoneNumber}
+                  onKeyPress={onKeyPressPhoneNumber}
                 />
               </FormControl>
             ) : (
@@ -103,7 +120,9 @@ export const LoginModal: React.FC<{
                 <Input
                   placeholder='----'
                   value={verificationCode}
+                  isRequired={true}
                   onChange={onChangeVerificationCode}
+                  onKeyPress={onKeyPressVerificationCode}
                 />
               </FormControl>
             )}
