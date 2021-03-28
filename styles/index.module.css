@@ -21,12 +21,14 @@
 .intro {
   display: flex;
   flex-direction: column;
-  max-width: var(--max-width);
+  align-items: center;
+  max-width: calc(min(740px, var(--max-width)));
   text-align: center;
 }
 
 .intro h2 {
   font-weight: 400;
+  max-width: calc(min(600px, var(--max-width)));
 }
 
 .particles {
