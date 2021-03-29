@@ -65,7 +65,7 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
-"@babel/runtime@^7.0.0", "@babel/runtime@^7.12.13", "@babel/runtime@^7.7.2":
+"@babel/runtime@^7.0.0", "@babel/runtime@^7.12.13", "@babel/runtime@^7.5.5", "@babel/runtime@^7.7.2":
   version "7.13.10"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.13.10.tgz#47d42a57b6095f4468da440388fdbad8bebf0d7d"
   integrity sha512-4QPkjJq6Ns3V/RgpEahRk+AGfL0eO6RHHtTWoNNr5mO49G6B5+X6d6THgWEAvTrznU5xYpbAlVKRYcsCgh/Akw==
@@ -1482,15 +1482,23 @@ clone@^2.1.2:
   resolved "https://registry.yarnpkg.com/clone/-/clone-2.1.2.tgz#1b7f4b9f591f1e8f83670401600345a02887435f"
   integrity sha1-G39Ln1kfHo+DZwQBYANFoCiHQ18=
 
-clubhouse-client@^0.1.1:
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/clubhouse-client/-/clubhouse-client-0.1.1.tgz#32b9274e4d6840297fe9bc3e605efc9927a2b9ae"
-  integrity sha512-9Ob5Nc0+cVoqBrEjMvmpQbhA17AechHHc2lLTVOT523a2x7UJXajxhCefJ4BjUGIVrcybZaKipRPVwMvOYLIaQ==
+clubhouse-client@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/clubhouse-client/-/clubhouse-client-1.0.2.tgz#bf22f48081374602b9cedc8aafac2ac268cc00f3"
+  integrity sha512-+lfW5kxu1oykwgXiF3QyxBQFoOLVKJmVPwG7KZ5fqYgnVq/IN/b8E4t9cBh0fiv69Z4GyDvtZfcz4O7s1OFUbw==
   dependencies:
     got "^11.8.2"
-    p-queue "^6.6.2"
     p-throttle "^4.1.1"
     uuid "^8.3.2"
+
+clubhouse-crawler@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/clubhouse-crawler/-/clubhouse-crawler-1.0.3.tgz#8d897c4c097a718e0a49ac2a1b5ca8aa9c61d875"
+  integrity sha512-+E68mYVu8jgzli5OThP0p0465W9SXkKLMXdMBBkS6yT7dU8AWkyodpKOc9i6Hxa3s+JtUndwgA/96hE0bYQMjA==
+  dependencies:
+    neo4j-driver "^4.2.3"
+    p-queue "^6.6.2"
+    p-throttle "^4.1.1"
 
 color-convert@^1.9.0:
   version "1.9.3"
@@ -2985,6 +2993,16 @@ natural-compare@^1.4.0:
   resolved "https://registry.yarnpkg.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
   integrity sha1-Sr6/7tdUHywnrPspvbvRXI1bpPc=
 
+neo4j-driver@^4.2.3:
+  version "4.2.3"
+  resolved "https://registry.yarnpkg.com/neo4j-driver/-/neo4j-driver-4.2.3.tgz#238c98cef329ff0fb11f9884360c4ff4650b2409"
+  integrity sha512-HCJ7+J5V/5yhP+b6G2zTb7SKlAN/oLYaMkD8Bo8L9veScDtgDHBlbkbYEHf1YSAd67OfjZKeF9l84J8Kjdw91g==
+  dependencies:
+    "@babel/runtime" "^7.5.5"
+    rxjs "^6.6.3"
+    text-encoding-utf-8 "^1.0.2"
+    uri-js "^4.4.0"
+
 next-iron-session@^4.1.12:
   version "4.1.12"
   resolved "https://registry.yarnpkg.com/next-iron-session/-/next-iron-session-4.1.12.tgz#b0b26adb5414482be9d9d12ca41909dd57664fb4"
@@ -3847,6 +3865,13 @@ run-parallel@^1.1.9:
   dependencies:
     queue-microtask "^1.2.2"
 
+rxjs@^6.6.3:
+  version "6.6.7"
+  resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-6.6.7.tgz#90ac018acabf491bf65044235d5863c4dab804c9"
+  integrity sha512-hTdwr+7yYNIT5n4AMYp85KA6yw2Va0FLa3Rguvbpa4W3I5xynaBZo41cM3XM+4Q6fRMj3sBYIR1VAmZMXYJvRQ==
+  dependencies:
+    tslib "^1.9.0"
+
 safe-buffer@^5.0.1, safe-buffer@^5.1.0, safe-buffer@^5.1.1, safe-buffer@^5.1.2, safe-buffer@^5.2.0, safe-buffer@~5.2.0:
   version "5.2.1"
   resolved "https://registry.yarnpkg.com/safe-buffer/-/safe-buffer-5.2.1.tgz#1eaf9fa9bdb1fdd4ec75f58f9cdb4e6b7827eec6"
@@ -4221,6 +4246,11 @@ table@^6.0.4:
     slice-ansi "^4.0.0"
     string-width "^4.2.0"
 
+text-encoding-utf-8@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/text-encoding-utf-8/-/text-encoding-utf-8-1.0.2.tgz#585b62197b0ae437e3c7b5d0af27ac1021e10d13"
+  integrity sha512-8bw4MY9WjdsD2aMtO0OzOCY3pXGYNx2d2FfHRVUKkiCPDWjKuOlhLVASS+pD7VkLTVjW268LYJHwsnPFlBpbAg==
+
 text-table@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
@@ -4302,7 +4332,7 @@ tsconfig-paths@^3.9.0:
     minimist "^1.2.0"
     strip-bom "^3.0.0"
 
-tslib@^1.0.0, tslib@^1.8.1, tslib@^1.9.3:
+tslib@^1.0.0, tslib@^1.8.1, tslib@^1.9.0, tslib@^1.9.3:
   version "1.14.1"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.14.1.tgz#cf2d38bdc34a134bcaf1091c41f6619e2f672d00"
   integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
@@ -4371,7 +4401,7 @@ unstated-next@^1.1.0:
   resolved "https://registry.yarnpkg.com/unstated-next/-/unstated-next-1.1.0.tgz#7bb4911a12fdf3cc8ad3eb11a0b315e4a8685ea8"
   integrity sha512-AAn47ZncPvgBGOvMcn8tSRxsrqwf2VdAPxLASTuLJvZt4rhKfDvUkmYZLGfclImSfTVMv7tF4ynaVxin0JjDCA==
 
-uri-js@^4.2.2:
+uri-js@^4.2.2, uri-js@^4.4.0:
   version "4.4.1"
   resolved "https://registry.yarnpkg.com/uri-js/-/uri-js-4.4.1.tgz#9b1a52595225859e55f669d928f88c6c57f2a77e"
   integrity sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==

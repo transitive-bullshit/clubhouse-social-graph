@@ -13,6 +13,15 @@ export function useUser() {
       endpoint: '/me'
     })
 
+    if (!user && res.user_profile) {
+      console.log('crawling', res.user_profile)
+      const crawl = await fetchClubhouseAPI({
+        method: 'POST',
+        endpoint: '/crawl'
+      })
+      console.log('result', crawl)
+    }
+
     setUser(res.user_profile)
   }
 
