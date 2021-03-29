@@ -49,6 +49,8 @@ export default withSession(
           }
         )
 
+        res.json(socialGraph)
+
         // add all of the users and relationships to neo4j
         const session = driver.session()
         try {
@@ -68,8 +70,6 @@ export default withSession(
         } finally {
           await session.close()
         }
-
-        res.json(socialGraph)
       } finally {
         if (driver) {
           await driver.close()
