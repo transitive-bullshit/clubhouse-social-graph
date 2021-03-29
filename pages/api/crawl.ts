@@ -1,4 +1,4 @@
-import { ClubhouseClient } from 'clubhouse-client'
+import { ClubhouseClient, crawlSocialGraph } from 'clubhouse-client'
 
 import {
   withSession,
@@ -17,12 +17,16 @@ export default withSession(
       }
 
       const client = new ClubhouseClient({
-        userId: user?.userId,
-        deviceId: user?.deviceId,
-        authToken: user?.authToken
+        userId: user.userId,
+        deviceId: user.deviceId,
+        authToken: user.authToken
       })
 
-      res.json(result)
+      const socialGraph = await crawlSocialGraph(client, user.userId, {
+        maxUsers: 1
+      })
+
+      res.json(socialGraph)
     } catch (err) {
       res.status(err.code || 500).json({ error: err.message })
     }
