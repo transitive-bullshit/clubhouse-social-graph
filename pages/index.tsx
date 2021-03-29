@@ -1,8 +1,8 @@
 import React from 'react'
-import ParticleAnimation from 'react-particle-animation'
+// import ParticleAnimation from 'react-particle-animation'
 
 import { User } from 'state/user'
-import { NavHeader, Head } from 'components'
+import { NavHeader, Head, ParticleAnimation } from 'components'
 import styles from 'styles/index.module.css'
 
 export default function HomePage() {
@@ -28,6 +28,7 @@ export default function HomePage() {
                 b: 228,
                 a: 255
               }}
+              interactive={true}
             />
           )}
 

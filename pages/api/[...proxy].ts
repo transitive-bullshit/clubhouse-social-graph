@@ -11,24 +11,28 @@ export default withSession(
   async (req: NextApiRequestSession, res: NextApiResponse) => {
     const { proxy } = req.query
     const endpoint = `/${(proxy as string[]).join('/')}`
+    const user = req.session.get('user')
+    console.log('>>>', endpoint, user)
+
+    const client = new ClubhouseClient({
+      userId: user?.userId,
+      deviceId: user?.deviceId,
+      authToken: user?.authToken
+    })
+
+    if (endpoint === '/me' && !client.isAuthenticated) {
+      res.status(401).json({ error: 'Authentication required' })
+      return
+    }
+
+    console.log({
+      endpoint,
+      method: req.method,
+      auth: client.isAuthenticated,
+      body: req.body
+    })
 
     try {
-      const user = req.session.get('user')
-      console.log('>>>', endpoint, user)
-
-      const client = new ClubhouseClient({
-        userId: user?.userId,
-        deviceId: user?.deviceId,
-        authToken: user?.authToken
-      })
-
-      console.log({
-        endpoint,
-        method: req.method,
-        auth: client.isAuthenticated,
-        body: req.body
-      })
-
       const result = await client._fetch({
         endpoint,
         method: req.method,
@@ -51,11 +55,15 @@ export default withSession(
 
       res.json(result)
     } catch (err) {
-      if (endpoint !== '/me') {
-        console.error('clubhouse API error', endpoint, err)
+      const code = err.code || err.response?.statusCode || 500
+
+      if (client.isAuthenticated && code === 401) {
+        // reset stale auth which will force the current user to logout
+        req.session.destroy()
       }
 
-      res.status(err.code || 500).json({ error: err.message })
+      console.error('clubhouse API error', endpoint, code, err)
+      res.status(code).json({ error: err.message })
     }
   }
 )
