@@ -12,17 +12,16 @@ export function useUser() {
     const res = await fetchClubhouseAPI({
       endpoint: '/me'
     })
+    setUser(res.user_profile)
 
     if (!user && res.user_profile) {
-      console.log('crawling', res.user_profile)
+      console.log('<<< crawling', res.user_profile)
       const crawl = await fetchClubhouseAPI({
         method: 'POST',
         endpoint: '/crawl'
       })
-      console.log('result', crawl)
+      console.log('>>> crawl result', crawl)
     }
-
-    setUser(res.user_profile)
   }
 
   const logout = async () => {

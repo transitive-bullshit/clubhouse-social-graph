@@ -22,6 +22,15 @@ export default withSession(
         return
       }
 
+      const seedUserId = req.body.seedUserId || user.userId
+      const maxUsers = req.body.maxUsers || 20
+      const throttle = req.body.throttle || {
+        limit: 1,
+        interval: 50
+      }
+      const crawlFollowers = req.body.crawlFollowers ?? true
+      const crawlInvites = req.body.crawlInvites ?? true
+
       let driver
 
       try {
@@ -32,43 +41,27 @@ export default withSession(
           userId: user.userId,
           deviceId: user.deviceId,
           authToken: user.authToken,
-          throttle: {
-            limit: 1,
-            interval: 50
-          }
+          throttle
         })
 
-        // perform a limited crawl of the social graph
-        const socialGraph = await crawler.crawlSocialGraph(
-          client,
-          user.userId,
-          {
-            maxUsers: 10,
-            crawlFollowers: true,
-            crawlInvites: true
-          }
-        )
-
-        res.json(socialGraph)
-
-        // add all of the users and relationships to neo4j
-        const session = driver.session()
+        // perform a limited crawl of the social graph, adding all users and
+        // relationships to neo4j
         try {
-          const users = Object.values(socialGraph)
-          for (let i = 0; i < users.length; ++i) {
-            const user = users[i]
-            console.log(`${i + 1} / ${users.length}) upserting user`, user)
+          const socialGraph = await crawler.crawlSocialGraph(
+            client,
+            seedUserId,
+            {
+              maxUsers,
+              crawlFollowers,
+              crawlInvites,
+              driver
+            }
+          )
 
-            await session.writeTransaction(async (tx) => {
-              const res = await crawler.upsertSocialGraphUser(tx, user)
-              console.log('user', res.records[0]?.get(0))
-            })
-          }
+          res.json(socialGraph)
         } catch (err) {
           console.error('unable to execute query', err)
           throw err
-        } finally {
-          await session.close()
         }
       } finally {
         if (driver) {
