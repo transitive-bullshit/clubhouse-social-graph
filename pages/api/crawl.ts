@@ -24,9 +24,10 @@ export default withSession(
 
       const seedUserId = req.body.seedUserId || user.userId
       const maxUsers = req.body.maxUsers || 20
-      const throttle = req.body.throttle || {
+      const throttle = {
         limit: 1,
-        interval: 50
+        interval: 50,
+        ...req.body.throttle
       }
       const crawlFollowers = req.body.crawlFollowers ?? true
       const crawlInvites = req.body.crawlInvites ?? true
@@ -46,29 +47,20 @@ export default withSession(
 
         // perform a limited crawl of the social graph, adding all users and
         // relationships to neo4j
-        try {
-          const socialGraph = await crawler.crawlSocialGraph(
-            client,
-            seedUserId,
-            {
-              maxUsers,
-              crawlFollowers,
-              crawlInvites,
-              driver
-            }
-          )
+        const socialGraph = await crawler.crawlSocialGraph(client, seedUserId, {
+          maxUsers,
+          crawlFollowers,
+          crawlInvites,
+          driver
+        })
 
-          res.json(socialGraph)
-        } catch (err) {
-          console.error('unable to execute query', err)
-          throw err
-        }
+        res.json(socialGraph)
       } finally {
-        if (driver) {
-          await driver.close()
-        }
+        await driver.close()
       }
     } catch (err) {
+      console.error('crawl error', err)
+
       res
         .status(err.code || err.response?.statusCode || 500)
         .json({ error: err.message })
