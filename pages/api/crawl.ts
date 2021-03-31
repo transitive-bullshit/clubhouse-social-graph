@@ -1,11 +1,14 @@
 import { ClubhouseClient } from 'clubhouse-client'
 import * as crawler from 'clubhouse-crawler'
+import * as neo4j from 'neo4j-driver'
 
 import {
   withSession,
   NextApiRequestSession,
   NextApiResponse
 } from 'lib/session'
+
+import { getSeedUsers } from 'lib/get-seed-users'
 
 export default withSession(
   async (req: NextApiRequestSession, res: NextApiResponse) => {
@@ -31,11 +34,19 @@ export default withSession(
       }
       const crawlFollowers = req.body.crawlFollowers ?? true
       const crawlInvites = req.body.crawlInvites ?? true
+      const incrementalPendingUserIds = new Set<string>()
 
-      let driver
+      let driver: neo4j.Driver
 
       try {
         driver = crawler.driver()
+
+        if (req.body.random) {
+          const seedUserIds = await getSeedUsers(driver)
+          for (const userId of seedUserIds) {
+            incrementalPendingUserIds.add(`${userId}`)
+          }
+        }
 
         // set up an authenticated API client with less aggressive throttling
         const client = new ClubhouseClient({
@@ -51,6 +62,7 @@ export default withSession(
           maxUsers,
           crawlFollowers,
           crawlInvites,
+          incrementalPendingUserIds,
           driver
         })
 
