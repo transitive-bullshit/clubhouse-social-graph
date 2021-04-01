@@ -1,0 +1,73 @@
+import * as crawler from 'clubhouse-crawler'
+import * as neo4j from 'neo4j-driver'
+
+import {
+  withSession,
+  NextApiRequestSession,
+  NextApiResponse
+} from 'lib/session'
+
+export default withSession(
+  async (req: NextApiRequestSession, res: NextApiResponse) => {
+    try {
+      const user = req.session.get('user')
+
+      if (!user) {
+        res.status(401).json({ error: 'Authentication required' })
+        return
+      }
+
+      if (req.method !== 'GET') {
+        res.status(405).json({ error: 'Method not supported' })
+        return
+      }
+
+      const userId = req.query.userId as string
+
+      if (!userId) {
+        res.status(400).end()
+        return
+      }
+
+      let driver: neo4j.Driver
+
+      try {
+        driver = crawler.driver()
+
+        let session: neo4j.Session
+
+        try {
+          session = driver.session({ defaultAccessMode: 'READ' })
+
+          const user = (
+            await crawler.getUserById(session, userId)
+          ).records[0]?.get(0)
+
+          const followers = (
+            await crawler.getUserFollowersById(session, userId)
+          ).records.map((record) => record.get(0))
+
+          const following = (
+            await crawler.getFollowingUsersById(session, userId)
+          ).records.map((record) => record.get(0))
+
+          res.json({
+            user,
+            followers,
+            following
+          })
+        } finally {
+          await session.close()
+        }
+      } finally {
+        await driver.close()
+      }
+    } catch (err) {
+      console.error('error', err)
+
+      res
+        .status(err.code || err.response?.statusCode || 500)
+        .json({ error: err.message })
+    }
+  }
+)
