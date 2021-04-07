@@ -9,6 +9,7 @@ import {
 } from 'lib/session'
 
 import { getSeedUsers } from 'lib/get-seed-users'
+import { isDev } from 'lib/config'
 
 export default withSession(
   async (req: NextApiRequestSession, res: NextApiResponse) => {
@@ -22,6 +23,11 @@ export default withSession(
 
       if (req.method !== 'POST') {
         res.status(405).json({ error: 'Method not supported' })
+        return
+      }
+
+      if (isDev) {
+        res.json({})
         return
       }
 

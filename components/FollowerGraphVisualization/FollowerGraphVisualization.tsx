@@ -16,36 +16,37 @@ export const FollowerGraphVisualization: React.FC = () => {
     const links = data.links.map((d) => Object.create(d))
     const nodes = data.nodes.map((d) => Object.create(d))
 
+    const id = (d: any) => d.id
+
     const simulation = d3
       .forceSimulation(nodes)
-      .force(
-        'link',
-        d3.forceLink(links).id((d) => d.id)
-      )
+      .force('link', d3.forceLink(links).id(id))
       .force('charge', d3.forceManyBody())
       .force('center', d3.forceCenter(width / 2, height / 2))
 
-    const svg = d3.select(d3Ref.current).attr('viewBox', [0, 0, width, height])
+    const svg = d3
+      .select(d3Ref.current)
+      .attr('viewBox', [0, 0, width, height] as any)
 
     const link = svg
-      .append('g')
+      .select('g.lines')
       .attr('stroke', '#999')
       .attr('stroke-opacity', 0.6)
       .selectAll('line')
-      .data(links, (d, i) => i)
+      .data(links)
       .join('line')
       .attr('stroke-width', (d) => Math.sqrt(d.value))
 
     const node = svg
-      .append('g')
+      .select('g.nodes')
       .attr('stroke', '#fff')
       .attr('stroke-width', 1.5)
       .selectAll('circle')
-      .data(nodes, (d) => d.id)
+      .data(nodes, id)
       .join('circle')
       .attr('r', 5)
       .attr('fill', color())
-    // .call(drag(simulation))
+      .call(drag(simulation))
 
     node.append('title').text((d) => d.id)
 
@@ -64,49 +65,40 @@ export const FollowerGraphVisualization: React.FC = () => {
       return (d) => scale(d.group)
     }
 
-    // function drag(simulation) {
-    //   function dragstarted(event) {
-    //     if (!event.active) simulation.alphaTarget(0.3).restart()
-    //     event.subject.fx = event.subject.x
-    //     event.subject.fy = event.subject.y
-    //   }
+    function drag(simulation) {
+      function onDragStart(event) {
+        if (!event.active) simulation.alphaTarget(0.3).restart()
+        event.subject.fx = event.subject.x
+        event.subject.fy = event.subject.y
+      }
 
-    //   function dragged(event) {
-    //     event.subject.fx = event.x
-    //     event.subject.fy = event.y
-    //   }
+      function onDrag(event) {
+        event.subject.fx = event.x
+        event.subject.fy = event.y
+      }
 
-    //   function dragended(event) {
-    //     if (!event.active) simulation.alphaTarget(0)
-    //     event.subject.fx = null
-    //     event.subject.fy = null
-    //   }
+      function onDragEnd(event) {
+        if (!event.active) simulation.alphaTarget(0)
+        event.subject.fx = null
+        event.subject.fy = null
+      }
 
-    //   return d3
-    //     .drag()
-    //     .on('start', dragstarted)
-    //     .on('drag', dragged)
-    //     .on('end', dragended)
-    // }
+      return d3
+        .drag()
+        .on('start', onDragStart)
+        .on('drag', onDrag)
+        .on('end', onDragEnd)
+    }
 
-    // Bind D3 data
-    // const update = svg.append('g').selectAll('text').data(data)
-
-    // // Enter new D3 elements
-    // update
-    //   .enter()
-    //   .append('text')
-    //   .attr('x', (d, i) => i * 25)
-    //   .attr('y', 40)
-    //   .style('font-size', 24)
-    //   .text((d: number) => d)
-
-    // // Update existing D3 elements
-    // update.attr('x', (d, i) => i * 40).text((d: number) => d)
-
-    // // Remove old D3 elements
-    // update.exit().remove()
+    return () => {
+      simulation.stop()
+    }
   }, [data, d3Ref.current])
 
-  return <svg width={640} height={480} ref={d3Ref} />
+  return (
+    <svg width={640} height={480} ref={d3Ref}>
+      <g className='lines' />
+      <g className='nodes' />
+    </svg>
+  )
 }

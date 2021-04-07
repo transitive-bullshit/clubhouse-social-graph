@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { Layout, FollowerGraphVisualization } from 'components'
-import styles from 'styles/index.module.css'
+import styles from 'styles/user.module.css'
 
 export const getStaticProps = async (context) => {
   const username = context.params.username as string
