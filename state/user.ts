@@ -10,6 +10,7 @@ export function useUser() {
 
   const updateUser = async () => {
     const res = await fetchClubhouseAPI({
+      method: 'POST',
       endpoint: '/me'
     })
     setUser(res.user_profile)

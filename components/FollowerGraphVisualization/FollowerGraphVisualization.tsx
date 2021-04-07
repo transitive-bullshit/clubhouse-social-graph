@@ -1,17 +1,20 @@
 import React from 'react'
 import * as d3 from 'd3'
+import { useMeasure } from 'react-use'
+
+// import { fetchClubhouseAPI } from 'lib/fetch-clubhouse-api'
+
+import styles from './styles.module.css'
 import data from './miserables.json'
 
 export const FollowerGraphVisualization: React.FC = () => {
+  const [measureRef, { width, height }] = useMeasure()
   const d3Ref = React.useRef(null)
 
   React.useEffect(() => {
     if (!d3Ref.current) {
       return
     }
-
-    const width = 640
-    const height = 480
 
     const links = data.links.map((d) => Object.create(d))
     const nodes = data.nodes.map((d) => Object.create(d))
@@ -93,12 +96,22 @@ export const FollowerGraphVisualization: React.FC = () => {
     return () => {
       simulation.stop()
     }
-  }, [data, d3Ref.current])
+  }, [d3Ref.current, width, height])
+
+  // React.useEffect(() => {
+  //   fetchClubhouseAPI({
+  //     endpoint: '/db/users/13870'
+  //   }).then((res) => {
+  //     console.log(res)
+  //   })
+  // }, [])
 
   return (
-    <svg width={640} height={480} ref={d3Ref}>
-      <g className='lines' />
-      <g className='nodes' />
-    </svg>
+    <div className={styles.wrapper} ref={measureRef}>
+      <svg width={width} height={height} ref={d3Ref}>
+        <g className='lines' />
+        <g className='nodes' />
+      </svg>
+    </div>
   )
 }

@@ -42,6 +42,7 @@
     "react-dom": "^17.0.2",
     "react-icons": "^4.2.0",
     "react-sizeme": "^3.0.1",
+    "react-use": "^17.2.3",
     "unstated-next": "^1.1.0"
   },
   "devDependencies": {

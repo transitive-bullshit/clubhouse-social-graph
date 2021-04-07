@@ -1,4 +1,4 @@
-import * as crawler from 'clubhouse-crawler'
+import * as db from 'clubhouse-crawler'
 import * as neo4j from 'neo4j-driver'
 
 import {
@@ -32,23 +32,23 @@ export default withSession(
       let driver: neo4j.Driver
 
       try {
-        driver = crawler.driver()
+        driver = db.driver()
 
         let session: neo4j.Session
 
         try {
           session = driver.session({ defaultAccessMode: 'READ' })
 
-          const user = (
-            await crawler.getUserById(session, userId)
-          ).records[0]?.get(0)
+          const user = (await db.getUserById(session, userId)).records[0]?.get(
+            0
+          )
 
           const followers = (
-            await crawler.getUserFollowersById(session, userId)
+            await db.getUserFollowersById(session, userId)
           ).records.map((record) => record.get(0))
 
           const following = (
-            await crawler.getFollowingUsersById(session, userId)
+            await db.getFollowingUsersById(session, userId)
           ).records.map((record) => record.get(0))
 
           res.json({
