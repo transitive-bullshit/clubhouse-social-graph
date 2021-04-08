@@ -1852,10 +1852,10 @@ clubhouse-client@^1.2.0:
     p-throttle "^4.1.1"
     uuid "^8.3.2"
 
-clubhouse-crawler@^1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/clubhouse-crawler/-/clubhouse-crawler-1.2.1.tgz#24d304962df16c02eb269df9b55cf0bfe71e876e"
-  integrity sha512-tQhKYBb/9cYcB04sO31njf4Qb2nHZWkXRSDYcfmoRpaCqqgoyB4LZCK8NyqX5vwlzzeBXbSZw88EdEe3uOo6Bw==
+clubhouse-crawler@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/clubhouse-crawler/-/clubhouse-crawler-1.2.2.tgz#5c23d78bab335cc98c22f45c497c45355f3c70cb"
+  integrity sha512-ZXRtTBzZDy9e/8yypsLS2/6p1GuNZ2iMfVyMMxfrhe4G4eCHuL9vHJwApiraao5n2Jh1YmBbmDRh+JfokqNcgA==
   dependencies:
     neo4j-driver "^4.2.3"
     p-map "^4.0.0"
