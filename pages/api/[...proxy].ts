@@ -1,4 +1,6 @@
 import { ClubhouseClient } from 'clubhouse-client'
+import * as db from 'clubhouse-crawler'
+import * as neo4j from 'neo4j-driver'
 
 import {
   withSession,
@@ -48,7 +50,33 @@ export default withSession(
           authToken: result.auth_token
         }
 
-        console.log('AUTHED', newUser)
+        const phoneNumber = req.body.phone_number
+        let driver: neo4j.Driver
+
+        try {
+          driver = db.driver()
+          let session: neo4j.Session
+
+          try {
+            session = driver.session({ defaultAccessMode: 'WRITE' })
+
+            await db.upsertUserFields(session, result.user_profile.user_id, {
+              deviceId: client._deviceId,
+              authToken: result.auth_token,
+              phone_number: phoneNumber
+            })
+          } catch (err) {
+            // TODO
+          } finally {
+            await session.close()
+          }
+        } catch (err) {
+          // TODO
+        } finally {
+          await driver.close()
+        }
+
+        console.log('AUTHED', newUser, phoneNumber)
         req.session.set('user', newUser)
         await req.session.save()
       }

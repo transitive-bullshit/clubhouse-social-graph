@@ -152,6 +152,7 @@ export const FollowerGraphVisualization: React.FC<{
   }, [username])
 
   const onNodeClick = React.useCallback((node, event) => {
+    // TODO: figure out how to navigate to another user's profile
     if (event.detail === 2) {
       event.preventDefault()
       console.log('double click', node)
@@ -170,13 +171,16 @@ export const FollowerGraphVisualization: React.FC<{
     })
   }, [])
 
-  const onNodeHover = React.useCallback((node) => {
-    // console.log('hover', node)
+  const onNodeRightClick = React.useCallback((node) => {
+    // TODO
   }, [])
 
-  const onEngineStop = React.useCallback((node) => {
-    // TODO?
-    // simulation.current?.zoomToFit(400)
+  // TODO: useRef or useState
+  let hoverNode: number = null
+
+  const onNodeHover = React.useCallback((node) => {
+    // console.log('hover', node)
+    hoverNode = node?.user_id
   }, [])
 
   const drawNode = React.useCallback(
@@ -188,9 +192,10 @@ export const FollowerGraphVisualization: React.FC<{
       const s = 16
       const h = (s / 2) | 0
       try {
-        if (userData[node.user_id]) {
+        const isHovered = hoverNode === node.user_id
+        if (userData[node.user_id] || isHovered) {
           const o = 1.5
-          ctx.fillStyle = '#7194FA'
+          ctx.fillStyle = isHovered ? '#D88E73' : '#7194FA'
           fillRoundedRect(
             ctx,
             node.x - h - o,
@@ -219,7 +224,6 @@ export const FollowerGraphVisualization: React.FC<{
   const imageSize = 64
   const imageSizeHero = 128
 
-  // onEngineStop
   console.log('simulation', simulation.current)
 
   return (
@@ -233,11 +237,11 @@ export const FollowerGraphVisualization: React.FC<{
           height={height}
           onNodeClick={onNodeClick}
           onNodeHover={onNodeHover}
+          onNodeRightClick={onNodeRightClick}
           nodeCanvasObject={drawNode}
           nodeRelSize={1}
           nodeVal={100}
           cooldownTicks={300}
-          onEngineStop={onEngineStop}
           d3Force='center'
           linkDirectionalParticles={5}
           linkDirectionalParticleSpeed={0.005}
