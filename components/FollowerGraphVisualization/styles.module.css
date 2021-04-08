@@ -1,3 +1,12 @@
 .wrapper {
   min-height: 480px;
+  max-height: 4096px;
+}
+
+.viz circle:hover {
+  fill: red;
+}
+
+.images {
+  display: none;
 }

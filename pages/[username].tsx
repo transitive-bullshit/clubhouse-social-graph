@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { Layout, FollowerGraphVisualization } from 'components'
+import { Switch } from '@chakra-ui/react'
 import styles from 'styles/user.module.css'
 
 export const getStaticProps = async (context) => {
@@ -30,12 +31,23 @@ export async function getStaticPaths() {
 }
 
 export default function UserDetailPage({ username }: { username: string }) {
+  const [isChecked, setIsChecked] = React.useState(false)
+
   return (
     <Layout>
       <section className={styles.socialGraph}>
         <h1>{username}</h1>
+        <Switch
+          isChecked={isChecked}
+          onChange={() => {
+            setIsChecked(!isChecked)
+          }}
+        />
 
-        <FollowerGraphVisualization />
+        <FollowerGraphVisualization
+          username={username}
+          visualization={isChecked ? 'following' : 'followers'}
+        />
       </section>
     </Layout>
   )

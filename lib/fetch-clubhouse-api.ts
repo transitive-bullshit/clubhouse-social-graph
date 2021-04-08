@@ -15,10 +15,18 @@ export async function fetchClubhouseAPI({
       headers: {
         'content-type': 'application/json'
       }
-    }).then((res) => res.json())
+    })
 
-    console.log('>>> fetchClubhouseAPI', endpoint, method, body, '=>', res)
-    return res
+    if (!res.ok) {
+      const error = await res.json()
+      console.warn('error', res.status, error.message)
+      throw new Error(error.message || 'unknown error')
+    }
+
+    const result = await res.json()
+
+    console.log('>>> fetchClubhouseAPI', endpoint, method, '=>', result)
+    return result
   } catch (err) {
     return {
       success: false,
