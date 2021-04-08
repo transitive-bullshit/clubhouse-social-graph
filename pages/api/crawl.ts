@@ -1,5 +1,5 @@
 import { ClubhouseClient } from 'clubhouse-client'
-import * as crawler from 'clubhouse-crawler'
+import * as db from 'clubhouse-crawler'
 import * as neo4j from 'neo4j-driver'
 
 import {
@@ -45,7 +45,7 @@ export default withSession(
       let driver: neo4j.Driver
 
       try {
-        driver = crawler.driver()
+        driver = db.driver()
 
         if (req.body.random) {
           const seedUserIds = await getSeedUsers(driver)
@@ -64,7 +64,7 @@ export default withSession(
 
         // perform a limited crawl of the social graph, adding all users and
         // relationships to neo4j
-        const socialGraph = await crawler.crawlSocialGraph(client, seedUserId, {
+        const socialGraph = await db.crawlSocialGraph(client, seedUserId, {
           maxUsers,
           crawlFollowers,
           crawlInvites,

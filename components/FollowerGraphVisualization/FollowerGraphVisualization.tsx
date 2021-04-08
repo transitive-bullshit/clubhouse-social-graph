@@ -2,12 +2,14 @@ import React from 'react'
 import * as d3 from 'd3'
 import { useMeasure } from 'react-use'
 
-// import { fetchClubhouseAPI } from 'lib/fetch-clubhouse-api'
+import { fetchClubhouseAPI } from 'lib/fetch-clubhouse-api'
 
 import styles from './styles.module.css'
 import data from './miserables.json'
 
-export const FollowerGraphVisualization: React.FC = () => {
+export const FollowerGraphVisualization: React.FC<{
+  username: string
+}> = ({ username }) => {
   const [measureRef, { width, height }] = useMeasure()
   const d3Ref = React.useRef(null)
 
@@ -98,9 +100,17 @@ export const FollowerGraphVisualization: React.FC = () => {
     }
   }, [d3Ref.current, width, height])
 
+  React.useEffect(() => {
+    fetchClubhouseAPI({
+      endpoint: `/db/users/13870`
+    }).then((res) => {
+      console.log(res)
+    })
+  }, [])
+
   // React.useEffect(() => {
   //   fetchClubhouseAPI({
-  //     endpoint: '/db/users/13870'
+  //     endpoint: `/db/users/username/${username}`
   //   }).then((res) => {
   //     console.log(res)
   //   })

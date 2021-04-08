@@ -24,9 +24,9 @@ export default withSession(
         return
       }
 
-      const userId = req.query.userId as string
+      const username = req.query.username as string
 
-      if (!userId) {
+      if (!username) {
         res.status(400).end()
         return
       }
@@ -42,13 +42,15 @@ export default withSession(
           session = driver.session({ defaultAccessMode: 'READ' })
 
           const user = convertNeo4jUser(
-            (await db.getUserById(session, userId)).records[0]?.get(0)
+            (await db.getUserByUsername(session, username)).records[0]?.get(0)
           )
 
           if (!user) {
             res.status(404).json({ error: 'User not found' })
             return
           }
+
+          const userId: number = user.user_id
 
           const followers = (
             await db.getUserFollowersById(session, userId)
