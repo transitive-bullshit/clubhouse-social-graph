@@ -37,6 +37,7 @@ export const FollowerGraphVisualization: React.FC<{
 }> = ({ username, visualization }) => {
   const router = useRouter()
   const simulation = React.useRef<any>()
+  const [hoverNode, setHoverNode] = React.useState<number>(null)
   const [measureRef, { width, height }] = useMeasure()
 
   const [userData, setUserData] = React.useState<UserData>({})
@@ -175,12 +176,8 @@ export const FollowerGraphVisualization: React.FC<{
     // TODO
   }, [])
 
-  // TODO: useRef or useState
-  let hoverNode: number = null
-
   const onNodeHover = React.useCallback((node) => {
-    // console.log('hover', node)
-    hoverNode = node?.user_id
+    setHoverNode(node?.user_id)
   }, [])
 
   const drawNode = React.useCallback(
@@ -214,7 +211,14 @@ export const FollowerGraphVisualization: React.FC<{
         // error with image
       }
     },
-    []
+    [hoverNode]
+  )
+
+  const wrapperStyle = React.useMemo(
+    () => ({
+      cursor: hoverNode ? 'pointer' : undefined
+    }),
+    [hoverNode]
   )
 
   // http://localhost:3000/_next/image?url=https%3A%2F%2Fclubhouseprod.s3.amazonaws.com%3A443%2F103_00fd39e3-f27f-4eb1-ab26-6e4b875a6dfa&w=64&q=100
@@ -224,11 +228,9 @@ export const FollowerGraphVisualization: React.FC<{
   const imageSize = 64
   const imageSizeHero = 128
 
-  console.log('simulation', simulation.current)
-
   return (
     <>
-      <div className={styles.wrapper} ref={measureRef}>
+      <div className={styles.wrapper} ref={measureRef} style={wrapperStyle}>
         <ForceGraph2D
           ref={simulation}
           graphData={graphData}
