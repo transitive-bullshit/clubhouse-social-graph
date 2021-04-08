@@ -1,5 +1,6 @@
 .wrapper {
   min-height: 480px;
+  height: calc(100vh - 80px);
   max-height: 4096px;
 }
 

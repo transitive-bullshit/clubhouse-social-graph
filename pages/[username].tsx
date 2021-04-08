@@ -31,7 +31,7 @@ export async function getStaticPaths() {
 }
 
 export default function UserDetailPage({ username }: { username: string }) {
-  const [isChecked, setIsChecked] = React.useState(false)
+  const [isChecked, setIsChecked] = React.useState(true)
 
   return (
     <Layout>

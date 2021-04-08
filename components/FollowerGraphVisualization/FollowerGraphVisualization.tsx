@@ -1,13 +1,13 @@
 import React from 'react'
 import { useMeasure } from 'react-use'
-import ForceGraph2D from './force-graph-no-ssr'
+import { useRouter } from 'next/router'
+
+import type { User } from 'clubhouse-client'
 
 import { fetchClubhouseAPI } from 'lib/fetch-clubhouse-api'
 
+import ForceGraph2D from './force-graph-no-ssr'
 import styles from './styles.module.css'
-// import initialData from './test-user.json'
-
-import type { User } from 'clubhouse-client'
 
 interface Link {
   source: number
@@ -18,7 +18,7 @@ interface CustomUser extends User {
   hero?: boolean
 }
 
-interface Data {
+interface GraphData {
   nodes: CustomUser[]
   links: Link[]
 }
@@ -35,23 +35,27 @@ export const FollowerGraphVisualization: React.FC<{
   username: string
   visualization: 'followers' | 'following'
 }> = ({ username, visualization }) => {
+  const router = useRouter()
   const simulation = React.useRef<any>()
   const [measureRef, { width, height }] = useMeasure()
 
   const [userData, setUserData] = React.useState<UserData>({})
 
-  const [data, setData] = React.useState<Data>({
+  const [graphData, setGraphData] = React.useState<GraphData>({
     nodes: [],
     links: []
   })
 
   const imageRefs = React.useRef({})
 
-  for (const node of data.nodes) {
+  for (const node of graphData.nodes) {
     imageRefs.current[node.user_id] =
       imageRefs.current[node.user_id] || React.createRef()
   }
 
+  // TODO: denormalize users here
+  // 1. reduce memory
+  // 2. retain hero attribute
   function upsertUsers(update: any) {
     const userId = update.user.user_id
     update.user.hero = true
@@ -62,6 +66,7 @@ export const FollowerGraphVisualization: React.FC<{
     }))
   }
 
+  // update the graph
   React.useEffect(() => {
     const users = {}
     const relationships = {}
@@ -107,47 +112,102 @@ export const FollowerGraphVisualization: React.FC<{
       }))
     })
 
-    setData({
+    setGraphData({
       nodes,
       links
     })
   }, [visualization, userData])
 
-  React.useEffect(() => {
-    if (!username) {
-      return
-    }
+  function fetchAndUpsertUserById(userId: string) {
+    return fetchClubhouseAPI({
+      endpoint: `/db/users/${userId}`
+    }).then((res) => {
+      if (!res.error) {
+        upsertUsers(res)
+      }
+    })
+  }
 
-    fetchClubhouseAPI({
+  function fetchAndUpsertUserByUsername(username: string) {
+    return fetchClubhouseAPI({
       endpoint: `/db/users/username/${username}`
     }).then((res) => {
       if (!res.error) {
         upsertUsers(res)
       }
     })
+  }
+
+  // load the initial user and their immediate followers / following
+  React.useEffect(() => {
+    if (!username) {
+      return
+    }
+
+    fetchAndUpsertUserByUsername(username).then(() => {
+      setTimeout(() => {
+        simulation.current?.zoomToFit(400)
+      }, 250)
+    })
   }, [username])
 
-  const onNodeClick = React.useCallback((node) => {
-    console.log('click', node)
+  const onNodeClick = React.useCallback((node, event) => {
+    if (event.detail === 2) {
+      event.preventDefault()
+      console.log('double click', node)
+      router.push(`/${node.username}`)
+      return false
+    }
+
+    if (userData[node.user_id]) {
+      return
+    }
+
+    fetchAndUpsertUserById(node.user_id).then(() => {
+      setTimeout(() => {
+        simulation.current?.zoomToFit(250)
+      }, 700)
+    })
   }, [])
 
   const onNodeHover = React.useCallback((node) => {
     // console.log('hover', node)
   }, [])
 
+  const onEngineStop = React.useCallback((node) => {
+    // TODO?
+    // simulation.current?.zoomToFit(400)
+  }, [])
+
   const drawNode = React.useCallback(
     (node, ctx: CanvasRenderingContext2D, scale) => {
       // if (node.user_id === 2015)
-      const image = imageRefs.current[node.user_id]?.current
-      if (!image) return
+      const image: HTMLImageElement = imageRefs.current[node.user_id]?.current
+      if (!image || !image.complete) return
 
-      const s = node.hero ? 20 : 16
-      ctx.drawImage(image, node.x - s / 2, node.y - s / 2, s, s)
-
-      // ctx.fillStyle = 'red'
-      // ctx.beginPath()
-      // ctx.ellipse(node.x, node.y, 4, 4, 0, 0, 2 * Math.PI)
-      // ctx.fill()
+      const s = 16
+      const h = (s / 2) | 0
+      try {
+        if (userData[node.user_id]) {
+          const o = 1.5
+          ctx.fillStyle = '#7194FA'
+          fillRoundedRect(
+            ctx,
+            node.x - h - o,
+            node.y - h - o,
+            s + 2 * o,
+            s + 2 * o,
+            s / 4
+          )
+          // ctx.beginPath()
+          // // ctx.ellipse(node.x, node.y, 4, 4, 0, 0, 2 * Math.PI)
+          // ctx.rect(node.x - h - 2, node.y - h - 2, s + 4, s + 4)
+          // ctx.fill()
+        }
+        ctx.drawImage(image, node.x - h, node.y - h, s, s)
+      } catch (err) {
+        // error with image
+      }
     },
     []
   )
@@ -160,27 +220,33 @@ export const FollowerGraphVisualization: React.FC<{
   const imageSizeHero = 128
 
   // onEngineStop
+  console.log('simulation', simulation.current)
 
   return (
     <>
       <div className={styles.wrapper} ref={measureRef}>
         <ForceGraph2D
           ref={simulation}
-          graphData={data}
+          graphData={graphData}
           nodeId='user_id'
           width={width}
           height={height}
           onNodeClick={onNodeClick}
           onNodeHover={onNodeHover}
           nodeCanvasObject={drawNode}
-          nodeRelSize={4}
-          // linkDirectionalParticles={5}
+          nodeRelSize={1}
+          nodeVal={100}
+          cooldownTicks={300}
+          onEngineStop={onEngineStop}
+          d3Force='center'
+          linkDirectionalParticles={5}
+          linkDirectionalParticleSpeed={0.005}
           // linkDirectionalArrowLength={5}
         />
       </div>
 
       <div className={styles.images}>
-        {data.nodes.map((node) => {
+        {graphData.nodes.map((node) => {
           const suffix = node.photo_url?.split(':443/')?.[1]
           if (!suffix) return null
 
@@ -199,21 +265,29 @@ export const FollowerGraphVisualization: React.FC<{
           )
         })}
       </div>
-
-      {/* <div className={styles.images}>
-        {data.nodes.map((node) => (
-          <Image
-            key={node.user_id}
-            className={styles.profileImage}
-            id={'' + node.user_id}
-            src={node.photo_url}
-            layout='responsive'
-            sizes='32px'
-            width={480}
-            height={480}
-          />
-        ))}
-      </div> */}
     </>
   )
+}
+
+function fillRoundedRect(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  radius: number
+) {
+  const r = x + w
+  const b = y + h
+  ctx.beginPath()
+  ctx.moveTo(x + radius, y)
+  ctx.lineTo(r - radius, y)
+  ctx.quadraticCurveTo(r, y, r, y + radius)
+  ctx.lineTo(r, y + h - radius)
+  ctx.quadraticCurveTo(r, b, r - radius, b)
+  ctx.lineTo(x + radius, b)
+  ctx.quadraticCurveTo(x, b, x, b - radius)
+  ctx.lineTo(x, y + radius)
+  ctx.quadraticCurveTo(x, y, x + radius, y)
+  ctx.fill()
 }
