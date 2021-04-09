@@ -60,7 +60,6 @@ export const FollowerGraphVisualization: React.FC<{
   // 2. retain hero attribute
   function upsertUsers(update: any) {
     const userId = update.user.user_id
-    update.user.hero = true
 
     setUserData((userData) => ({
       ...userData,
@@ -149,9 +148,13 @@ export const FollowerGraphVisualization: React.FC<{
     setIsLoading(true)
     fetchAndUpsertUserByUsername(username).then(() => {
       setTimeout(() => {
-        simulation.current?.zoomToFit(400)
-        setIsLoading(false)
-      }, 250)
+        simulation.current?.zoomToFit(250)
+
+        setTimeout(() => {
+          simulation.current?.zoomToFit(100)
+          setIsLoading(false)
+        }, 250)
+      }, 500)
     })
   }, [username])
 
@@ -208,6 +211,10 @@ export const FollowerGraphVisualization: React.FC<{
     `
   }, [])
 
+  function isHeroNode(node) {
+    return !!userData[node.user_id]
+  }
+
   const drawNode = React.useCallback(
     (node, ctx: CanvasRenderingContext2D) => {
       const image: HTMLImageElement = imageRefs.current[node.user_id]?.current
@@ -217,7 +224,7 @@ export const FollowerGraphVisualization: React.FC<{
       const h = (s / 2) | 0
       try {
         const isHovered = hoverNode === node.user_id
-        if (userData[node.user_id] || isHovered) {
+        if (isHovered || isHeroNode(node)) {
           const o = 1.5
           ctx.fillStyle = isHovered ? '#D88E73' : '#7194FA'
           fillRoundedRect(
@@ -238,7 +245,7 @@ export const FollowerGraphVisualization: React.FC<{
         // error with image
       }
     },
-    [hoverNode]
+    [hoverNode, userData]
   )
 
   const wrapperStyle = React.useMemo(
@@ -252,7 +259,8 @@ export const FollowerGraphVisualization: React.FC<{
   // http://localhost:3000/_next/image?url=https%3A%2F%2Fclubhouseprod.s3.amazonaws.com%3A443%2F2015_97c3b287-b71d-4c12-b5c9-37766c509c0d&w=64&q=75
   // https://chsg.imgix.net/4175_4462da0b-3b07-4ac1-898d-3e96da3bb54a?w=64&auto=format&mask=corners&corner-radius=10,10,10,10
   const imageProxyUrl = 'https://chsg.imgix.net'
-  const imageSize = 64
+  const numUsers = Object.keys(userData).length
+  const imageSize = numUsers < 2 ? 256 : 64
   const imageSizeHero = 128
 
   return (
@@ -289,7 +297,8 @@ export const FollowerGraphVisualization: React.FC<{
           const suffix = node.photo_url?.split(':443/')?.[1]
           if (!suffix) return null
 
-          const size = node.hero ? imageSizeHero : imageSize
+          // TODO: LOD?
+          const size = isHeroNode(node) ? imageSizeHero : imageSize
           const url = `${imageProxyUrl}/${suffix}?w=${size}&auto=format&mask=corners`
           // const url = `/_next/image?url=${encodeURIComponent(
           //   node.photo_url

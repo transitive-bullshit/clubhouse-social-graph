@@ -35,14 +35,14 @@ export default function UserDetailPage({ username }: { username: string }) {
 
   return (
     <Layout>
-      <section className={styles.socialGraph}>
-        <h1>{username}</h1>
-        <Switch
+      <section className={styles.fullPage}>
+        {/* <h1>{username}</h1> */}
+        {/* <Switch
           isChecked={isChecked}
           onChange={() => {
             setIsChecked(!isChecked)
           }}
-        />
+        /> */}
 
         <FollowerGraphVisualization
           username={username}

@@ -1,10 +1,13 @@
 .header {
-  position: sticky;
+  position: absolute;
+  top: 0;
+  left: 0;
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
   z-index: 100;
+  pointer-events: none;
 }
 
 .content {
@@ -32,6 +35,7 @@
 
 .nav {
   display: flex;
+  pointer-events: all;
 }
 
 .nav a {
