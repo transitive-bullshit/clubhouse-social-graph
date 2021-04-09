@@ -2,11 +2,18 @@ import React from 'react'
 import { useMeasure } from 'react-use'
 import { useRouter } from 'next/router'
 
+import { motion, AnimatePresence } from 'framer-motion'
+import Lottie from 'react-lottie-player'
+
 import type { User } from 'clubhouse-client'
 
 import { fetchClubhouseAPI } from 'lib/fetch-clubhouse-api'
+import { getApproxNumRepresentation } from 'lib/get-approx-num-representation'
+
+import loading from 'public/loading.json'
 
 import ForceGraph2D from './force-graph-no-ssr'
+import { fillRoundedRect } from './fill-rounded-rect'
 import styles from './styles.module.css'
 
 interface Link {
@@ -37,17 +44,15 @@ export const FollowerGraphVisualization: React.FC<{
 }> = ({ username, visualization }) => {
   const router = useRouter()
   const simulation = React.useRef<any>()
+  const imageRefs = React.useRef<any>({})
   const [hoverNode, setHoverNode] = React.useState<number>(null)
+  const [isLoading, setIsLoading] = React.useState<boolean>(true)
   const [measureRef, { width, height }] = useMeasure()
-
   const [userData, setUserData] = React.useState<UserData>({})
-
   const [graphData, setGraphData] = React.useState<GraphData>({
     nodes: [],
     links: []
   })
-
-  const imageRefs = React.useRef({})
 
   for (const node of graphData.nodes) {
     imageRefs.current[node.user_id] =
@@ -145,9 +150,11 @@ export const FollowerGraphVisualization: React.FC<{
       return
     }
 
+    setIsLoading(true)
     fetchAndUpsertUserByUsername(username).then(() => {
       setTimeout(() => {
         simulation.current?.zoomToFit(400)
+        setIsLoading(false)
       }, 250)
     })
   }, [username])
@@ -165,24 +172,48 @@ export const FollowerGraphVisualization: React.FC<{
       return
     }
 
+    setIsLoading(true)
     fetchAndUpsertUserById(node.user_id).then(() => {
       setTimeout(() => {
         simulation.current?.zoomToFit(250)
+        setIsLoading(false)
       }, 700)
     })
   }, [])
 
   const onNodeRightClick = React.useCallback((node) => {
-    // TODO
+    // View @node.username
+    // View relationship between @username and @node.username
+    // Crawl @node.username?
   }, [])
 
   const onNodeHover = React.useCallback((node) => {
     setHoverNode(node?.user_id)
   }, [])
 
+  const nodeLabel = React.useCallback((node) => {
+    const numFollowers = getApproxNumRepresentation(node.num_followers)
+    const numFollowing = getApproxNumRepresentation(node.num_following)
+
+    return `
+    <div class="${styles.userNodeTooltip}">
+      <span class="${styles.name}">
+        ${node.name}
+      </span>
+
+      <span class="${styles.numFollowers}">
+        ${numFollowers}
+      </span>
+
+      <span class="${styles.numFollowing}">
+        ${numFollowing}
+      </span>
+    </div>
+    `
+  }, [])
+
   const drawNode = React.useCallback(
-    (node, ctx: CanvasRenderingContext2D, scale) => {
-      // if (node.user_id === 2015)
+    (node, ctx: CanvasRenderingContext2D) => {
       const image: HTMLImageElement = imageRefs.current[node.user_id]?.current
       if (!image || !image.complete) return
 
@@ -241,6 +272,7 @@ export const FollowerGraphVisualization: React.FC<{
           onNodeHover={onNodeHover}
           onNodeRightClick={onNodeRightClick}
           nodeCanvasObject={drawNode}
+          nodeLabel={nodeLabel}
           nodeRelSize={1}
           nodeVal={100}
           cooldownTicks={300}
@@ -249,6 +281,24 @@ export const FollowerGraphVisualization: React.FC<{
           linkDirectionalParticleSpeed={0.005}
           // linkDirectionalArrowLength={5}
         />
+
+        <AnimatePresence>
+          {isLoading && (
+            <motion.div
+              className={styles.loading}
+              initial={{ opacity: Object.keys(userData).length ? 0 : 1 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <Lottie
+                play
+                loop
+                animationData={loading}
+                className={styles.loadingAnimation}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       <div className={styles.images}>
@@ -273,27 +323,4 @@ export const FollowerGraphVisualization: React.FC<{
       </div>
     </>
   )
-}
-
-function fillRoundedRect(
-  ctx: CanvasRenderingContext2D,
-  x: number,
-  y: number,
-  w: number,
-  h: number,
-  radius: number
-) {
-  const r = x + w
-  const b = y + h
-  ctx.beginPath()
-  ctx.moveTo(x + radius, y)
-  ctx.lineTo(r - radius, y)
-  ctx.quadraticCurveTo(r, y, r, y + radius)
-  ctx.lineTo(r, y + h - radius)
-  ctx.quadraticCurveTo(r, b, r - radius, b)
-  ctx.lineTo(x + radius, b)
-  ctx.quadraticCurveTo(x, b, x, b - radius)
-  ctx.lineTo(x, y + radius)
-  ctx.quadraticCurveTo(x, y, x + radius, y)
-  ctx.fill()
 }
