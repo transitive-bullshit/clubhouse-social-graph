@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { Layout, FollowerGraphVisualization } from 'components'
-import { Switch } from '@chakra-ui/react'
+// import { Switch } from '@chakra-ui/react'
 import styles from 'styles/user.module.css'
 
 export const getStaticProps = async (context) => {
@@ -31,7 +31,7 @@ export async function getStaticPaths() {
 }
 
 export default function UserDetailPage({ username }: { username: string }) {
-  const [isChecked, setIsChecked] = React.useState(true)
+  const [isChecked] = React.useState(true)
 
   return (
     <Layout>

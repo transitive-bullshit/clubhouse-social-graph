@@ -7,7 +7,7 @@ export async function fetchClubhouseAPI({
   method?: 'POST' | 'GET'
   body?: any
 }) {
-  console.log('<<< fetchClubhouseAPI', endpoint, method, body)
+  console.log('<<< fetchClubhouseAPI', method, endpoint)
   try {
     const res = await fetch(`/api${endpoint}`, {
       method,
@@ -25,7 +25,7 @@ export async function fetchClubhouseAPI({
 
     const result = await res.json()
 
-    console.log('>>> fetchClubhouseAPI', endpoint, method, '=>', result)
+    console.log('>>> fetchClubhouseAPI', method, endpoint, '=>', result)
     return result
   } catch (err) {
     return {

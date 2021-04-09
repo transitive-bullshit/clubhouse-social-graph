@@ -180,7 +180,7 @@ export const FollowerGraphVisualization: React.FC<{
     })
   }, [])
 
-  const onNodeRightClick = React.useCallback((node) => {
+  const onNodeRightClick = React.useCallback(() => {
     // View @node.username
     // View relationship between @username and @node.username
     // Crawl @node.username?
@@ -295,7 +295,10 @@ export const FollowerGraphVisualization: React.FC<{
       <div className={styles.images}>
         {graphData.nodes.map((node) => {
           const suffix = node.photo_url?.split(':443/')?.[1]
-          if (!suffix) return null
+          if (!suffix) {
+            // TODO: add fallback image
+            return null
+          }
 
           // TODO: LOD?
           const size = isHeroNode(node) ? imageSizeHero : imageSize
