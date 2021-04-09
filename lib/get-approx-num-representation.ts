@@ -1,4 +1,8 @@
 export function getApproxNumRepresentation(n: number) {
+  if (typeof n !== 'number') {
+    return 'n/a'
+  }
+
   if (n <= 1e4) {
     return `${n}`
   }

@@ -2,16 +2,12 @@ import React from 'react'
 import { useMeasure } from 'react-use'
 import { useRouter } from 'next/router'
 
-import { motion, AnimatePresence } from 'framer-motion'
-import Lottie from 'react-lottie-player'
-
 import type { User } from 'clubhouse-client'
 
 import { fetchClubhouseAPI } from 'lib/fetch-clubhouse-api'
 import { getApproxNumRepresentation } from 'lib/get-approx-num-representation'
 
-import loading from 'public/loading.json'
-
+import { LoadingIndicator } from '../LoadingIndicator/LoadingIndicator'
 import ForceGraph2D from './force-graph-no-ssr'
 import { fillRoundedRect } from './fill-rounded-rect'
 import styles from './styles.module.css'
@@ -282,23 +278,10 @@ export const FollowerGraphVisualization: React.FC<{
           // linkDirectionalArrowLength={5}
         />
 
-        <AnimatePresence>
-          {isLoading && (
-            <motion.div
-              className={styles.loading}
-              initial={{ opacity: Object.keys(userData).length ? 0 : 1 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            >
-              <Lottie
-                play
-                loop
-                animationData={loading}
-                className={styles.loadingAnimation}
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <LoadingIndicator
+          isLoading={isLoading}
+          initial={{ opacity: Object.keys(userData).length ? 0 : 1 }}
+        />
       </div>
 
       <div className={styles.images}>
