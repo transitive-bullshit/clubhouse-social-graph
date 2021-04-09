@@ -7,6 +7,7 @@ import {
   NextApiRequestSession,
   NextApiResponse
 } from 'lib/session'
+import { sanitizePhoneNumber } from 'lib/sanitize-phone-number'
 
 // API proxy to clubhouse
 export default withSession(
@@ -25,6 +26,19 @@ export default withSession(
     if (endpoint === '/me' && !client.isAuthenticated) {
       res.status(401).json({ error: 'Authentication required' })
       return
+    }
+
+    if (req.body?.phone_number) {
+      const phoneNumber = sanitizePhoneNumber(req.body.phone_number)
+
+      if (!phoneNumber) {
+        res
+          .status(400)
+          .json({ error: `Invalid phone number "${req.body.phone_number}"` })
+        return
+      }
+
+      req.body.phone_number = phoneNumber
     }
 
     console.log({

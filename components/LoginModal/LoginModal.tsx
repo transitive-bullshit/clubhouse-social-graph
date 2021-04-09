@@ -1,4 +1,5 @@
 import React from 'react'
+import { useRouter } from 'next/router'
 import {
   Button,
   FormControl,
@@ -20,6 +21,7 @@ export const LoginModal: React.FC<{
   isOpen: boolean
   onClose: () => void
 }> = ({ isOpen, onClose }) => {
+  const router = useRouter()
   const initialRef = React.useRef()
   const [phoneNumber, setPhoneNumber] = React.useState('')
   const [verificationCode, setVerificationCode] = React.useState('')
@@ -84,7 +86,11 @@ export const LoginModal: React.FC<{
     setIsLoading(false)
     if (res.success) {
       setError(null)
-      await updateUser()
+      await updateUser().then((user) => {
+        if (user) {
+          router.push(`/${user.username}`)
+        }
+      })
       onClose()
     } else {
       setError(res.error)
@@ -97,15 +103,17 @@ export const LoginModal: React.FC<{
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Sign in to Clubhouse</ModalHeader>
+
           <ModalCloseButton />
 
           <ModalBody pb={6}>
             {state === '/start_phone_number_auth' ? (
               <FormControl>
                 <FormLabel>Enter your phone number</FormLabel>
+
                 <Input
                   ref={initialRef}
-                  placeholder='+15555555555'
+                  placeholder='555-555-5555'
                   value={phoneNumber}
                   isRequired={true}
                   onChange={onChangePhoneNumber}
@@ -117,6 +125,7 @@ export const LoginModal: React.FC<{
                 <FormLabel>
                   Enter the code that Clubhouse just texted you
                 </FormLabel>
+
                 <Input
                   placeholder='----'
                   value={verificationCode}

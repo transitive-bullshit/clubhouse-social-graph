@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Layout, ParticleAnimation } from 'components'
+import { Layout, ParticleAnimation, HeroCTA } from 'components'
 import styles from 'styles/index.module.css'
 
 export default function HomePage() {
@@ -32,6 +32,8 @@ export default function HomePage() {
             Cool visualizations for all your Clubhouse peeps, invite chain, and
             follower graph 🤙
           </h2>
+
+          <HeroCTA />
         </div>
       </section>
     </Layout>

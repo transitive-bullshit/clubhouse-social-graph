@@ -1,20 +1,23 @@
 .loading {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
   pointer-events: none;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.fill {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background: rgba(255, 255, 255, 0.75);
 }
 
 .loadingAnimation {
   width: 200px;
   height: 200px;
-  max-width: calc(min(50vw, 50%));
-  max-height: calc(min(50vh, 50%));
+  max-width: 50vw;
+  max-height: 50vh;
 }

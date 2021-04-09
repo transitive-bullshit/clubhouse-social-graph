@@ -1,7 +1,6 @@
 import React from 'react'
 import Link from 'next/link'
 import {
-  useDisclosure,
   Avatar,
   Button,
   Icon,
@@ -10,7 +9,9 @@ import {
   MenuList,
   MenuItem
 } from '@chakra-ui/react'
+import { useRouter } from 'next/router'
 import { IoIosLogOut } from 'react-icons/io'
+import { AiOutlineUser, AiOutlineHome } from 'react-icons/ai'
 
 import { LoginModal } from 'components'
 import { User } from 'state/user'
@@ -18,9 +19,23 @@ import { User } from 'state/user'
 import styles from './styles.module.css'
 
 export const NavHeader: React.FC = () => {
-  const loginModal = useDisclosure()
-  const { user, isLoggedIn, isLoading, logout } = User.useContainer()
+  const router = useRouter()
+  const {
+    user,
+    isLoggedIn,
+    isLoading,
+    loginModal,
+    logout
+  } = User.useContainer()
   console.log({ user, isLoggedIn })
+
+  const onClickHome = React.useCallback(() => {
+    router.push('/')
+  }, [router])
+
+  const onClickProfile = React.useCallback(() => {
+    router.push(`/${user.username}`)
+  }, [user, router])
 
   return (
     <header className={styles.header}>
@@ -45,6 +60,20 @@ export const NavHeader: React.FC = () => {
                 </MenuButton>
 
                 <MenuList>
+                  <MenuItem
+                    icon={<Icon as={AiOutlineHome} />}
+                    onClick={onClickHome}
+                  >
+                    Home
+                  </MenuItem>
+
+                  <MenuItem
+                    icon={<Icon as={AiOutlineUser} />}
+                    onClick={onClickProfile}
+                  >
+                    Profile
+                  </MenuItem>
+
                   <MenuItem icon={<Icon as={IoIosLogOut} />} onClick={logout}>
                     Log out
                   </MenuItem>

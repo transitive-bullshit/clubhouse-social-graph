@@ -1,11 +1,13 @@
 import React from 'react'
 import { createContainer } from 'unstated-next'
+import { useDisclosure } from '@chakra-ui/react'
 
 import { fetchClubhouseAPI } from 'lib/fetch-clubhouse-api'
 
 export function useUser() {
   const [user, setUser] = React.useState(null)
   const [isLoading, setIsLoading] = React.useState(true)
+  const loginModal = useDisclosure()
   const isLoggedIn = !!user?.user_id
 
   const updateUser = async () => {
@@ -14,15 +16,7 @@ export function useUser() {
       endpoint: '/me'
     })
     setUser(res.user_profile)
-
-    if (!user && res.user_profile) {
-      console.log('<<< crawling', res.user_profile)
-      const crawl = await fetchClubhouseAPI({
-        method: 'POST',
-        endpoint: '/crawl'
-      })
-      console.log('>>> crawl result', crawl)
-    }
+    return res.user_profile
   }
 
   const logout = async () => {
@@ -32,6 +26,23 @@ export function useUser() {
 
     setUser(null)
   }
+
+  async function crawlUser(user) {
+    if (!user) return
+
+    console.log('<<< crawl', user.user_id, user)
+    const crawl = await fetchClubhouseAPI({
+      method: 'POST',
+      endpoint: '/crawl'
+    })
+    console.log('>>> crawl', user.user_id, crawl)
+  }
+
+  React.useEffect(() => {
+    if (user) {
+      crawlUser(user)
+    }
+  }, [user])
 
   React.useEffect(() => {
     setIsLoading(true)
@@ -45,7 +56,7 @@ export function useUser() {
     // }
   }, [])
 
-  return { user, isLoggedIn, isLoading, updateUser, logout }
+  return { user, isLoggedIn, isLoading, updateUser, loginModal, logout }
 }
 
 export const User = createContainer(useUser)
