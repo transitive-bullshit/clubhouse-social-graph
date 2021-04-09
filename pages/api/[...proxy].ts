@@ -38,6 +38,7 @@ export default withSession(
         return
       }
 
+      // console.log('phone number', req.body.phone_number, '=>', phoneNumber)
       req.body.phone_number = phoneNumber
     }
 
