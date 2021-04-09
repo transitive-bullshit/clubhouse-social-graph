@@ -1,5 +1,5 @@
 export function getApproxNumRepresentation(n: number) {
-  if (typeof n !== 'number') {
+  if (typeof n !== 'number' || n < 0) {
     return 'n/a'
   }
 
