@@ -15,7 +15,8 @@ export const FocusedUserPane = () => {
   const {
     focusedUser: user,
     userNodeMap,
-    addUserNode,
+    addUserById,
+    resetUserNodeMapById,
     removeUserNode
   } = Viz.useContainer()
   const router = useRouter()
@@ -26,7 +27,9 @@ export const FocusedUserPane = () => {
   const isExpanded = !!userNodeMap[user?.user_id]
   const isActiveUser = user && router.query.username === user.username
 
-  const onClickExpand = React.useCallback(() => {}, [addUserNode, user])
+  const onClickExpand = React.useCallback(() => {
+    addUserById(user.user_id)
+  }, [addUserById, user])
 
   const onClickCollapse = React.useCallback(() => {
     removeUserNode(user.user_id)
@@ -34,6 +37,7 @@ export const FocusedUserPane = () => {
 
   const onClickViewGraph = React.useCallback(() => {
     router.push(`/${user.username}`)
+    resetUserNodeMapById(user.user_id)
   }, [router, user])
 
   return (
@@ -70,34 +74,6 @@ export const FocusedUserPane = () => {
 
             {user.bio && <p className={styles.bio}>{user.bio}</p>}
 
-            {(user.twitter || (user as any).instagram) && (
-              <div className={styles.social}>
-                {user.twitter && (
-                  <a
-                    className={styles.twitter}
-                    href={`https://twitter.com/${user.twitter}`}
-                    title={`Twitter @${user.twitter}`}
-                    target='_blank'
-                    rel='noopener noreferrer'
-                  >
-                    <FaTwitter size={24} />
-                  </a>
-                )}
-
-                {(user as any).instagram && (
-                  <a
-                    className={styles.instagram}
-                    href={`https://instagram.com/${(user as any).instagram}`}
-                    title={`Instagram @${(user as any).instagram}`}
-                    target='_blank'
-                    rel='noopener noreferrer'
-                  >
-                    <FaInstagram size={24} />
-                  </a>
-                )}
-              </div>
-            )}
-
             <div className={styles.actions}>
               {isExpanded ? (
                 <Button colorScheme='blue' onClick={onClickCollapse}>
@@ -131,6 +107,34 @@ export const FocusedUserPane = () => {
                 </Button>
               </a>
             </div>
+
+            {(user.twitter || (user as any).instagram) && (
+              <div className={styles.social}>
+                {user.twitter && (
+                  <a
+                    className={styles.twitter}
+                    href={`https://twitter.com/${user.twitter}`}
+                    title={`Twitter @${user.twitter}`}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                  >
+                    <FaTwitter size={24} />
+                  </a>
+                )}
+
+                {(user as any).instagram && (
+                  <a
+                    className={styles.instagram}
+                    href={`https://instagram.com/${(user as any).instagram}`}
+                    title={`Instagram @${(user as any).instagram}`}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                  >
+                    <FaInstagram size={24} />
+                  </a>
+                )}
+              </div>
+            )}
           </div>
         </motion.div>
       )}

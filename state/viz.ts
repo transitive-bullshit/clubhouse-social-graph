@@ -12,11 +12,15 @@ function useViz() {
     'viz',
     withDefault(StringParam, 'following')
   )
+  const [isLoading, setIsLoading] = React.useState<boolean>(true)
   const [visualization, setVisualization] = React.useState<Visualization>(
     vizQuery as Visualization
   )
   const [userNodeMap, setUserNodeMap] = React.useState<UserNodeMap>({})
   const [focusedUser, setFocusedUser] = React.useState<User>(null)
+  const simulation = React.useRef<any>()
+
+  // TODO
   const infoModal = useDisclosure()
 
   const addUserNode = React.useCallback(
@@ -37,6 +41,28 @@ function useViz() {
       setUserNodeMap((userNodeMap) => omit(userNodeMap, userId))
     },
     [setUserNodeMap]
+  )
+
+  const addUserById = React.useCallback(
+    (userId: string | number) => {
+      setIsLoading(true)
+      fetchAndUpsertUserById(`${userId}`).then(() => {
+        setTimeout(() => {
+          simulation.current?.zoomToFit(250)
+          setIsLoading(false)
+        }, 1000)
+      })
+    },
+    [addUserNode, setIsLoading, simulation]
+  )
+
+  const resetUserNodeMapById = React.useCallback(
+    (userId: string | number) => {
+      setIsLoading(true)
+      setUserNodeMap({})
+      addUserById(userId)
+    },
+    [addUserById, setUserNodeMap, setIsLoading]
   )
 
   function fetchAndUpsertUserById(userId: string) {
@@ -63,6 +89,13 @@ function useViz() {
     userNodeMap,
     addUserNode,
     removeUserNode,
+    addUserById,
+    resetUserNodeMapById,
+
+    simulation,
+
+    isLoading,
+    setIsLoading,
 
     infoModal
   }

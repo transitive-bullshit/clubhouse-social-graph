@@ -1,9 +1,7 @@
 import React from 'react'
 import { useMeasure } from 'react-use'
-import { useRouter } from 'next/router'
 
 import { User } from 'lib/types'
-import { fetchClubhouseAPI } from 'lib/fetch-clubhouse-api'
 import { getApproxNumRepresentation } from 'lib/get-approx-num-representation'
 import { getProfilePhotoUrl } from 'lib/get-profile-photo-url'
 import { Viz } from 'state/viz'
@@ -27,14 +25,15 @@ export const SocialGraphVisualization: React.FC = () => {
   const {
     visualization,
     userNodeMap,
-    addUserNode,
-    setFocusedUser
+    addUserById,
+    setFocusedUser,
+    focusedUser,
+    simulation,
+    isLoading,
+    setIsLoading
   } = Viz.useContainer()
-  const router = useRouter()
-  const simulation = React.useRef<any>()
   const imageRefs = React.useRef<any>({})
   const [hoverNode, setHoverNode] = React.useState<number>(null)
-  const [isLoading, setIsLoading] = React.useState<boolean>(true)
   const [measureRef, { width, height }] = useMeasure()
   const [graphData, setGraphData] = React.useState<GraphData>({
     nodes: [],
@@ -115,16 +114,6 @@ export const SocialGraphVisualization: React.FC = () => {
     })
   }, [visualization, userNodeMap, setGraphData])
 
-  function fetchAndUpsertUserById(userId: string) {
-    return fetchClubhouseAPI({
-      endpoint: `/db/users/${userId}`
-    }).then((res) => {
-      if (!res.error) {
-        addUserNode(res)
-      }
-    })
-  }
-
   // initial graph layout
   React.useEffect(() => {
     if (numUsers !== 1) {
@@ -157,29 +146,19 @@ export const SocialGraphVisualization: React.FC = () => {
   const onNodeClick = React.useCallback(
     (node, event) => {
       event.preventDefault()
-
-      // TODO: figure out how to navigate to another user's profile
-      if (event.detail === 2) {
-        event.preventDefault()
-        console.log('double click', node)
-        router.push(`/${node.username}`)
-        return false
-      }
+      setFocusedUser(node)
 
       if (userNodeMap[node.user_id]) {
-        setFocusedUser(node)
+        // already expanded
         return
       }
 
-      setIsLoading(true)
-      fetchAndUpsertUserById(node.user_id).then(() => {
-        setTimeout(() => {
-          simulation.current?.zoomToFit(250)
-          setIsLoading(false)
-        }, 1000)
-      })
+      if (focusedUser && focusedUser.user_id === node.user_id) {
+        // clicking on the focused users a second time will expand their graph
+        addUserById(node.user_id)
+      }
     },
-    [userNodeMap, addUserNode, setIsLoading]
+    [userNodeMap, focusedUser, addUserById]
   )
 
   const onBackgroundClick = React.useCallback(() => {
