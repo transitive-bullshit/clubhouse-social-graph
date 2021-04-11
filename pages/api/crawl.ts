@@ -72,6 +72,11 @@ export default withSession(
           driver
         })
 
+        res.setHeader(
+          'Cache-Control',
+          'public, s-maxage=3600, max-age=3600, stale-while-revalidate=60'
+        )
+
         res.json(socialGraph)
       } finally {
         await driver.close()

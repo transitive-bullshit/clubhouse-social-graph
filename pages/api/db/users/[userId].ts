@@ -50,33 +50,40 @@ export default withSession(
             return
           }
 
-          const followers = (
-            await db.getUserFollowersById(session, userId)
-          ).records.map((record) => convertNeo4jUser(record.get(0)))
+          const results = await session.readTransaction((tx) =>
+            Promise.all([
+              db.getUserFollowersById(tx, userId),
+              db.getFollowingUsersById(tx, userId),
+              db.getUsersInvitedById(tx, userId),
+              db.getUserInviteChainByUserId(tx, userId)
+            ])
+          )
 
-          const following = (
-            await db.getFollowingUsersById(session, userId)
-          ).records.map((record) => convertNeo4jUser(record.get(0)))
+          const followers = results[0].records.map((record) =>
+            convertNeo4jUser(record.get(0))
+          )
 
-          const inviteChain = (
-            await db.getUserInviteChainByUserId(session, userId)
-          ).map((user) => convertNeo4jUser(user))
+          const following = results[1].records.map((record) =>
+            convertNeo4jUser(record.get(0))
+          )
 
-          const invitees = (
-            await db.getUsersInvitedById(session, userId)
-          ).records.map((record) => convertNeo4jUser(record.get(0)))
+          const invitees = results[2].records.map((record) =>
+            convertNeo4jUser(record.get(0))
+          )
+
+          const inviteChain = results[3].map((user) => convertNeo4jUser(user))
 
           res.setHeader(
             'Cache-Control',
-            'public, s-maxage=60, max-age=60, stale-while-revalidate=60'
+            'public, s-maxage=600, max-age=600, stale-while-revalidate=60'
           )
 
           res.json({
             user,
             followers,
             following,
-            inviteChain,
-            invitees
+            invitees,
+            inviteChain
           })
         } finally {
           await session.close()
