@@ -145,6 +145,8 @@ export const SocialGraphVisualization: React.FC = () => {
 
   const onNodeClick = React.useCallback(
     (node, event) => {
+      event.preventDefault()
+
       // TODO: figure out how to navigate to another user's profile
       if (event.detail === 2) {
         event.preventDefault()
@@ -168,6 +170,10 @@ export const SocialGraphVisualization: React.FC = () => {
     },
     [userNodeMap, addUserNode, setIsLoading]
   )
+
+  const onBackgroundClick = React.useCallback(() => {
+    setFocusedUser(null)
+  }, [setFocusedUser])
 
   React.useEffect(() => {
     setIsLoading(true)
@@ -275,6 +281,7 @@ export const SocialGraphVisualization: React.FC = () => {
           width={width}
           height={height}
           nodeId='user_id'
+          onBackgroundClick={onBackgroundClick}
           onNodeClick={onNodeClick}
           onNodeHover={onNodeHover}
           onNodeRightClick={onNodeRightClick}

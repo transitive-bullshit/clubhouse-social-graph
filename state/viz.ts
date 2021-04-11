@@ -35,6 +35,8 @@ function useViz() {
     setViz(visualization === 'following' ? undefined : visualization)
   }, [visualization, setViz])
 
+  console.log({ focusedUser })
+
   return {
     visualization,
     setVisualization,
