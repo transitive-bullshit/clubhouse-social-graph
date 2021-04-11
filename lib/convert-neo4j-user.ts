@@ -1,7 +1,7 @@
 import { User } from 'clubhouse-client'
 
 export const convertNeo4jUser = (user?: any): User | null => {
-  const u = user?.properties
+  const u = user?.properties || user
 
   if (u) {
     // remote any potentially sensitive info

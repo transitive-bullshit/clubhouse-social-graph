@@ -31,14 +31,14 @@ interface UserData {
     user: User
     followers: User[]
     following: User[]
+    inviteChain: User[]
+    invitees: User[]
   }
 }
 
-export type Visualization = 'followers' | 'following' | 'invites'
-
 export const FollowerGraphVisualization: React.FC<{
   username: string
-  visualization: Visualization
+  visualization: 'followers' | 'following' | 'invites'
 }> = ({ username, visualization }) => {
   const router = useRouter()
   const simulation = React.useRef<any>()
@@ -62,6 +62,7 @@ export const FollowerGraphVisualization: React.FC<{
   // 2. retain hero attribute
   function upsertUsers(update: any) {
     const userId = update.user.user_id
+    console.log('upsertUsers', userId, update)
 
     setUserData((userData) => ({
       ...userData,
@@ -71,10 +72,10 @@ export const FollowerGraphVisualization: React.FC<{
 
   // update the graph
   React.useEffect(() => {
-    const users = {}
     const relationships = {}
+    const users = {}
 
-    function addFollower(source: number, target: number) {
+    function addRelationship(source: number, target: number) {
       if (!relationships[source]) {
         relationships[source] = new Set<number>()
       }
@@ -82,22 +83,33 @@ export const FollowerGraphVisualization: React.FC<{
       relationships[source].add(target)
     }
 
-    for (const user of Object.values(userData)) {
-      const userId = user.user.user_id
-      const followers = user.followers
-      const following = user.following
-
-      users[userId] = user.user
+    for (const userNode of Object.values(userData)) {
+      const userId = userNode.user.user_id
+      users[userId] = userNode.user
 
       if (visualization === 'followers') {
-        for (const user of followers) {
-          users[user.user_id] = user
-          addFollower(user.user_id, userId)
+        for (const u of userNode.followers) {
+          users[u.user_id] = u
+          addRelationship(u.user_id, userId)
         }
       } else if (visualization === 'following') {
-        for (const user of following) {
-          users[user.user_id] = user
-          addFollower(userId, user.user_id)
+        for (const u of userNode.following) {
+          users[u.user_id] = u
+          addRelationship(userId, u.user_id)
+        }
+      } else if (visualization === 'invites') {
+        console.log(userNode)
+
+        let prevUserId = userId
+        for (const u of userNode.inviteChain) {
+          users[u.user_id] = u
+          addRelationship(prevUserId, u.user_id)
+          prevUserId = u.user_id
+        }
+
+        for (const u of userNode.invitees) {
+          users[u.user_id] = u
+          addRelationship(u.user_id, userId)
         }
       }
     }
@@ -119,7 +131,7 @@ export const FollowerGraphVisualization: React.FC<{
       nodes,
       links
     })
-  }, [visualization, userData])
+  }, [visualization, userData, setGraphData])
 
   function fetchAndUpsertUserById(userId: string) {
     return fetchClubhouseAPI({
@@ -158,29 +170,33 @@ export const FollowerGraphVisualization: React.FC<{
         }, 250)
       }, 500)
     })
-  }, [username])
+  }, [username, setUserData, setIsLoading])
 
-  const onNodeClick = React.useCallback((node, event) => {
-    // TODO: figure out how to navigate to another user's profile
-    if (event.detail === 2) {
-      event.preventDefault()
-      console.log('double click', node)
-      router.push(`/${node.username}`)
-      return false
-    }
+  const onNodeClick = React.useCallback(
+    (node, event) => {
+      // TODO: figure out how to navigate to another user's profile
+      if (event.detail === 2) {
+        event.preventDefault()
+        console.log('double click', node)
+        router.push(`/${node.username}`)
+        return false
+      }
 
-    if (userData[node.user_id]) {
-      return
-    }
+      if (userData[node.user_id]) {
+        return
+      }
+      console.log('click', node, userData)
 
-    setIsLoading(true)
-    fetchAndUpsertUserById(node.user_id).then(() => {
-      setTimeout(() => {
-        simulation.current?.zoomToFit(250)
-        setIsLoading(false)
-      }, 700)
-    })
-  }, [])
+      setIsLoading(true)
+      fetchAndUpsertUserById(node.user_id).then(() => {
+        setTimeout(() => {
+          simulation.current?.zoomToFit(250)
+          setIsLoading(false)
+        }, 700)
+      })
+    },
+    [userData, setUserData, setIsLoading]
+  )
 
   const onNodeRightClick = React.useCallback(() => {
     // View @node.username
@@ -188,9 +204,12 @@ export const FollowerGraphVisualization: React.FC<{
     // Crawl @node.username?
   }, [])
 
-  const onNodeHover = React.useCallback((node) => {
-    setHoverNode(node?.user_id)
-  }, [])
+  const onNodeHover = React.useCallback(
+    (node) => {
+      setHoverNode(node?.user_id)
+    },
+    [setHoverNode]
+  )
 
   const nodeLabel = React.useCallback((node) => {
     const numFollowers = getApproxNumRepresentation(node.num_followers)
@@ -263,9 +282,21 @@ export const FollowerGraphVisualization: React.FC<{
   const imageProxyUrl = 'https://chsg.imgix.net'
   const defaultProfileImageUrl = '/profile.png'
   const numUsers = Object.keys(userData).length
-  const shouldDislayLargeUsers = numUsers <= 2
+  const numNodes = graphData.nodes.length
+  const shouldDislayLargeUsers = numUsers <= 2 || numNodes <= 128
   const imageSize = shouldDislayLargeUsers ? 512 : 64
-  const imageSizeHero = shouldDislayLargeUsers ? 1024 : 128
+  const imageSizeHero = shouldDislayLargeUsers ? 512 : 128
+
+  const params = React.useMemo(() => {
+    return {
+      nodeRelSize: 1,
+      nodeVal: 100,
+      cooldownTicks: 300,
+      dagMode: visualization === 'invites' ? 'bu' : undefined,
+      linkDirectionalParticles: 5,
+      linkDirectionalParticleSpeed: 0.005
+    }
+  }, [visualization])
 
   return (
     <>
@@ -273,21 +304,15 @@ export const FollowerGraphVisualization: React.FC<{
         <ForceGraph2D
           ref={simulation}
           graphData={graphData}
-          nodeId='user_id'
           width={width}
           height={height}
+          nodeId='user_id'
           onNodeClick={onNodeClick}
           onNodeHover={onNodeHover}
           onNodeRightClick={onNodeRightClick}
           nodeCanvasObject={drawNode}
           nodeLabel={nodeLabel}
-          nodeRelSize={1}
-          nodeVal={100}
-          cooldownTicks={300}
-          d3Force='center'
-          linkDirectionalParticles={5}
-          linkDirectionalParticleSpeed={0.005}
-          // linkDirectionalArrowLength={5}
+          {...params}
         />
 
         <LoadingIndicator

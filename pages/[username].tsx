@@ -31,7 +31,7 @@ export async function getStaticPaths() {
 }
 
 export default function UserDetailPage({ username }: { username: string }) {
-  const [isChecked] = React.useState(true)
+  const [visualization] = React.useState<any>('following')
 
   return (
     <Layout>
@@ -46,7 +46,7 @@ export default function UserDetailPage({ username }: { username: string }) {
 
         <FollowerGraphVisualization
           username={username}
-          visualization={isChecked ? 'following' : 'followers'}
+          visualization={visualization}
         />
       </section>
     </Layout>

@@ -58,10 +58,25 @@ export default withSession(
             await db.getFollowingUsersById(session, userId)
           ).records.map((record) => convertNeo4jUser(record.get(0)))
 
+          const inviteChain = (
+            await db.getUserInviteChainByUserId(session, userId)
+          ).map((user) => convertNeo4jUser(user))
+
+          const invitees = (
+            await db.getUsersInvitedById(session, userId)
+          ).records.map((record) => convertNeo4jUser(record.get(0)))
+
+          res.setHeader(
+            'Cache-Control',
+            'public, s-maxage=60, max-age=60, stale-while-revalidate=60'
+          )
+
           res.json({
             user,
             followers,
-            following
+            following,
+            inviteChain,
+            invitees
           })
         } finally {
           await session.close()
