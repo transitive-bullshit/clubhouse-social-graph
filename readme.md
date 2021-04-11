@@ -32,7 +32,7 @@ This webapp is built using [Next.js](https://nextjs.org) deployed to [Vercel](ht
 - Core visualization
   - [ ] Navigate to user profiles
   - [ ] Navigate to user relationship viz
-  - [ ] Add fallback profile photo
+  - [x] Add fallback profile photo
 - [ ] About page `/about`
 - [ ] Data page `/data`
 

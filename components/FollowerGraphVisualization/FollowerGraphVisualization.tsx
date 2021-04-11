@@ -259,6 +259,7 @@ export const FollowerGraphVisualization: React.FC<{
   // http://localhost:3000/_next/image?url=https%3A%2F%2Fclubhouseprod.s3.amazonaws.com%3A443%2F2015_97c3b287-b71d-4c12-b5c9-37766c509c0d&w=64&q=75
   // https://chsg.imgix.net/4175_4462da0b-3b07-4ac1-898d-3e96da3bb54a?w=64&auto=format&mask=corners&corner-radius=10,10,10,10
   const imageProxyUrl = 'https://chsg.imgix.net'
+  const defaultProfileImageUrl = '/profile.png'
   const numUsers = Object.keys(userData).length
   const imageSize = numUsers < 2 ? 256 : 64
   const imageSizeHero = 128
@@ -294,18 +295,17 @@ export const FollowerGraphVisualization: React.FC<{
 
       <div className={styles.images}>
         {graphData.nodes.map((node) => {
+          let url = defaultProfileImageUrl
           const suffix = node.photo_url?.split(':443/')?.[1]
-          if (!suffix) {
-            // TODO: add fallback image
-            return null
-          }
 
-          // TODO: LOD?
-          const size = isHeroNode(node) ? imageSizeHero : imageSize
-          const url = `${imageProxyUrl}/${suffix}?w=${size}&auto=format&mask=corners`
-          // const url = `/_next/image?url=${encodeURIComponent(
-          //   node.photo_url
-          // )}&w=32&q=75`
+          if (suffix) {
+            // TODO: LOD?
+            const size = isHeroNode(node) ? imageSizeHero : imageSize
+            url = `${imageProxyUrl}/${suffix}?w=${size}&auto=format&mask=corners`
+            // url = `/_next/image?url=${encodeURIComponent(
+            //   node.photo_url
+            // )}&w=32&q=75`
+          }
 
           return (
             <img
