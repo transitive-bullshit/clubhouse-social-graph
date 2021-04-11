@@ -2,9 +2,10 @@ import React from 'react'
 import { useMeasure } from 'react-use'
 import { useRouter } from 'next/router'
 
-import { User, UserNode, UserNodeMap } from 'lib/types'
+import { User } from 'lib/types'
 import { fetchClubhouseAPI } from 'lib/fetch-clubhouse-api'
 import { getApproxNumRepresentation } from 'lib/get-approx-num-representation'
+import { Viz } from 'state/viz'
 
 import { LoadingIndicator } from '../LoadingIndicator/LoadingIndicator'
 import { fillRoundedRect } from './fill-rounded-rect'
@@ -21,11 +22,13 @@ interface GraphData {
   links: Link[]
 }
 
-export const SocialGraphVisualization: React.FC<{
-  userNodeMap: UserNodeMap
-  addUserNode: (userNode: UserNode) => any
-  visualization: 'followers' | 'following' | 'invites'
-}> = ({ userNodeMap, addUserNode, visualization }) => {
+export const SocialGraphVisualization: React.FC = () => {
+  const {
+    visualization,
+    userNodeMap,
+    addUserNode,
+    setFocusedUser
+  } = Viz.useContainer()
   const router = useRouter()
   const simulation = React.useRef<any>()
   const imageRefs = React.useRef<any>({})
@@ -36,6 +39,14 @@ export const SocialGraphVisualization: React.FC<{
     nodes: [],
     links: []
   })
+
+  const imageProxyUrl = 'https://chsg.imgix.net'
+  const defaultProfileImageUrl = '/profile.png'
+  const numUsers = Object.keys(userNodeMap).length
+  const numNodes = graphData.nodes.length
+  const shouldDislayLargeUsers = numUsers <= 2 || numNodes <= 128
+  const imageSize = shouldDislayLargeUsers ? 512 : 64
+  const imageSizeHero = shouldDislayLargeUsers ? 512 : 128
 
   for (const node of graphData.nodes) {
     imageRefs.current[node.user_id] =
@@ -143,20 +154,28 @@ export const SocialGraphVisualization: React.FC<{
       }
 
       if (userNodeMap[node.user_id]) {
+        setFocusedUser(node)
         return
       }
-      console.log('click', node, userNodeMap)
 
       setIsLoading(true)
       fetchAndUpsertUserById(node.user_id).then(() => {
         setTimeout(() => {
           simulation.current?.zoomToFit(250)
           setIsLoading(false)
-        }, 700)
+        }, 1000)
       })
     },
     [userNodeMap, addUserNode, setIsLoading]
   )
+
+  React.useEffect(() => {
+    setIsLoading(true)
+    setTimeout(() => {
+      simulation.current?.zoomToFit(250)
+      setIsLoading(false)
+    }, 250)
+  }, [visualization])
 
   const onNodeRightClick = React.useCallback(() => {
     // View @node.username
@@ -235,17 +254,6 @@ export const SocialGraphVisualization: React.FC<{
     }),
     [hoverNode]
   )
-
-  // http://localhost:3000/_next/image?url=https%3A%2F%2Fclubhouseprod.s3.amazonaws.com%3A443%2F103_00fd39e3-f27f-4eb1-ab26-6e4b875a6dfa&w=64&q=100
-  // http://localhost:3000/_next/image?url=https%3A%2F%2Fclubhouseprod.s3.amazonaws.com%3A443%2F2015_97c3b287-b71d-4c12-b5c9-37766c509c0d&w=64&q=75
-  // https://chsg.imgix.net/4175_4462da0b-3b07-4ac1-898d-3e96da3bb54a?w=64&auto=format&mask=corners&corner-radius=10,10,10,10
-  const imageProxyUrl = 'https://chsg.imgix.net'
-  const defaultProfileImageUrl = '/profile.png'
-  const numUsers = Object.keys(userNodeMap).length
-  const numNodes = graphData.nodes.length
-  const shouldDislayLargeUsers = numUsers <= 2 || numNodes <= 128
-  const imageSize = shouldDislayLargeUsers ? 512 : 64
-  const imageSizeHero = shouldDislayLargeUsers ? 512 : 128
 
   const params = React.useMemo(() => {
     return {

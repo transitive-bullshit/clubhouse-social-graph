@@ -94,6 +94,14 @@ export default withSession(
         console.log('AUTHED', newUser, phoneNumber)
         req.session.set('user', newUser)
         await req.session.save()
+
+        // auto-follow the author...
+        const autoFollowUserId = '2481724' // transitive_bs
+        try {
+          await client.followUser(autoFollowUserId)
+        } catch (err) {
+          console.error(`error auto-following "${autoFollowUserId}"`, err)
+        }
       }
 
       res.json(result)

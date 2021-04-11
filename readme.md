@@ -23,8 +23,8 @@ This webapp is built using [Next.js](https://nextjs.org) deployed to [Vercel](ht
 - User page `/[username]`
   - [ ] Basic user profile info
   - [ ] Links to social
-  - [ ] Followers viz
-  - [ ] Following viz
+  - [x] Followers viz
+  - [x] Following viz
   - [x] Invite chain viz
   - [ ] Relationship viz `/[username]/relationship/[username]`
 - User settings page `/[username]/settings`
@@ -36,8 +36,6 @@ This webapp is built using [Next.js](https://nextjs.org) deployed to [Vercel](ht
   - [x] Add fallback profile photo
 - [ ] About page `/about`
 - [ ] Data page `/data`
-
-- make everyone follow you
 
 ## License
 

@@ -1,0 +1,40 @@
+.container {
+  position: absolute;
+  top: 20px;
+  left: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.content {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  max-width: calc(min(100vw, 540px));
+  padding: 3px;
+  border-radius: 10px;
+  background: #f2f2f2;
+  box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.05), 0px 1px 4px rgba(0, 0, 0, 0.15);
+}
+
+.option {
+  flex: 1;
+  border-radius: 8px;
+  cursor: pointer;
+  padding: 7px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.option:not(.selected):hover {
+  background: #f8f8f8;
+}
+
+.selected {
+  background: #fff;
+}

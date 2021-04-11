@@ -27,7 +27,6 @@ export const NavHeader: React.FC = () => {
     loginModal,
     logout
   } = User.useContainer()
-  console.log({ user, isLoggedIn })
 
   const onClickHome = React.useCallback(() => {
     router.push('/')

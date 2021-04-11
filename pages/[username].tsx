@@ -3,9 +3,16 @@ import React from 'react'
 import * as db from 'clubhouse-crawler'
 import * as neo4j from 'neo4j-driver'
 
-import { Layout, SocialGraphVisualization } from 'components'
+import {
+  Layout,
+  SocialGraphVisualization,
+  VisualizationSelector,
+  QueryParamProvider
+} from 'components'
 import { getFullUserByUsername } from 'lib/get-full-user-by-username'
-import { UserNode, UserNodeMap } from 'lib/types'
+import { UserNode } from 'lib/types'
+import { Viz } from 'state/viz'
+
 import styles from 'styles/user.module.css'
 
 export const getStaticProps = async (context) => {
@@ -34,6 +41,7 @@ export const getStaticProps = async (context) => {
       await driver.close()
     }
 
+    // revalidate once every hour
     return { props, revalidate: 3600 }
   } catch (err) {
     console.error('page error', username, err)
@@ -56,40 +64,31 @@ export default function UserDetailPage({
   username: string
   userNode: UserNode
 }) {
-  const [userNodeMap, setUserNodeMap] = React.useState<UserNodeMap>({})
-  const [visualization] = React.useState<any>('following')
-
-  const addUserNode = React.useCallback(
-    (userNode: UserNode) => {
-      const userId = userNode.user.user_id
-      console.log('addUserNode', userId, userNode)
-
-      setUserNodeMap((userNodeMap) => ({
-        ...userNodeMap,
-        [userId]: userNode
-      }))
-    },
-    [setUserNodeMap]
+  return (
+    <Layout>
+      <QueryParamProvider>
+        <Viz.Provider>
+          <SocialGraph userNode={userNode} />
+        </Viz.Provider>
+      </QueryParamProvider>
+    </Layout>
   )
+}
+
+const SocialGraph = ({ userNode }: { userNode: UserNode }) => {
+  const { addUserNode } = Viz.useContainer()
 
   React.useEffect(() => {
     if (!userNode) return
 
-    setUserNodeMap({
-      [userNode.user.user_id]: userNode
-    })
-  }, [userNode])
+    addUserNode(userNode)
+  }, [userNode, addUserNode])
 
-  console.log('UserDetailPage', username, !!userNode)
   return (
-    <Layout>
-      <section className={styles.fullPage}>
-        <SocialGraphVisualization
-          userNodeMap={userNodeMap}
-          addUserNode={addUserNode}
-          visualization={visualization}
-        />
-      </section>
-    </Layout>
+    <section className={styles.fullPage}>
+      <SocialGraphVisualization />
+
+      <VisualizationSelector />
+    </section>
   )
 }

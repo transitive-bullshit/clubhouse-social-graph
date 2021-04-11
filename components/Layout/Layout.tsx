@@ -2,6 +2,7 @@ import React from 'react'
 
 import { User } from 'state/user'
 import { NavHeader, Head } from 'components'
+
 import styles from './styles.module.css'
 
 export const Layout = ({ children }) => {

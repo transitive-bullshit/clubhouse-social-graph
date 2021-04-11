@@ -4,7 +4,7 @@ import { useDisclosure } from '@chakra-ui/react'
 
 import { fetchClubhouseAPI } from 'lib/fetch-clubhouse-api'
 
-export function useUser() {
+function useUser() {
   const [user, setUser] = React.useState(null)
   const [isLoading, setIsLoading] = React.useState(true)
   const loginModal = useDisclosure()
