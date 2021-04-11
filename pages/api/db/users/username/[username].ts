@@ -7,7 +7,7 @@ import {
   NextApiResponse
 } from 'lib/session'
 
-import { convertNeo4jUser } from 'lib/convert-neo4j-user'
+import { getFullUserByUsername } from 'lib/get-full-user-by-username'
 
 const usernameCache = {}
 
@@ -48,52 +48,17 @@ export default withSession(
         try {
           session = driver.session({ defaultAccessMode: 'READ' })
 
-          const user = convertNeo4jUser(
-            (await db.getUserByUsername(session, username)).records[0]?.get(0)
-          )
+          const result = await getFullUserByUsername(session, username)
 
-          if (!user) {
+          if (!result) {
             res.status(404).json({ error: 'User not found' })
             return
           }
-
-          const userId: number = user.user_id
-
-          const results = await session.readTransaction((tx) =>
-            Promise.all([
-              db.getUserFollowersById(tx, userId),
-              db.getFollowingUsersById(tx, userId),
-              db.getUsersInvitedById(tx, userId),
-              db.getUserInviteChainByUserId(tx, userId)
-            ])
-          )
-
-          const followers = results[0].records.map((record) =>
-            convertNeo4jUser(record.get(0))
-          )
-
-          const following = results[1].records.map((record) =>
-            convertNeo4jUser(record.get(0))
-          )
-
-          const invitees = results[2].records.map((record) =>
-            convertNeo4jUser(record.get(0))
-          )
-
-          const inviteChain = results[3].map((user) => convertNeo4jUser(user))
 
           res.setHeader(
             'Cache-Control',
             'public, s-maxage=600, max-age=600, stale-while-revalidate=60'
           )
-
-          const result = {
-            user,
-            followers,
-            following,
-            invitees,
-            inviteChain
-          }
 
           usernameCache[username] = result
           res.json(result)

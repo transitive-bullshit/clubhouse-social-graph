@@ -2,14 +2,13 @@ import React from 'react'
 import { useMeasure } from 'react-use'
 import { useRouter } from 'next/router'
 
-import type { User } from 'clubhouse-client'
-
+import { User, UserNode, UserNodeMap } from 'lib/types'
 import { fetchClubhouseAPI } from 'lib/fetch-clubhouse-api'
 import { getApproxNumRepresentation } from 'lib/get-approx-num-representation'
 
 import { LoadingIndicator } from '../LoadingIndicator/LoadingIndicator'
-import ForceGraph2D from './force-graph-no-ssr'
 import { fillRoundedRect } from './fill-rounded-rect'
+import ForceGraph2D from './force-graph-no-ssr'
 import styles from './styles.module.css'
 
 interface Link {
@@ -17,36 +16,22 @@ interface Link {
   target: number
 }
 
-interface CustomUser extends User {
-  hero?: boolean
-}
-
 interface GraphData {
-  nodes: CustomUser[]
+  nodes: User[]
   links: Link[]
 }
 
-interface UserData {
-  [userId: string]: {
-    user: User
-    followers: User[]
-    following: User[]
-    inviteChain: User[]
-    invitees: User[]
-  }
-}
-
-export const FollowerGraphVisualization: React.FC<{
-  username: string
+export const SocialGraphVisualization: React.FC<{
+  userNodeMap: UserNodeMap
+  addUserNode: (userNode: UserNode) => any
   visualization: 'followers' | 'following' | 'invites'
-}> = ({ username, visualization }) => {
+}> = ({ userNodeMap, addUserNode, visualization }) => {
   const router = useRouter()
   const simulation = React.useRef<any>()
   const imageRefs = React.useRef<any>({})
   const [hoverNode, setHoverNode] = React.useState<number>(null)
   const [isLoading, setIsLoading] = React.useState<boolean>(true)
   const [measureRef, { width, height }] = useMeasure()
-  const [userData, setUserData] = React.useState<UserData>({})
   const [graphData, setGraphData] = React.useState<GraphData>({
     nodes: [],
     links: []
@@ -57,20 +42,7 @@ export const FollowerGraphVisualization: React.FC<{
       imageRefs.current[node.user_id] || React.createRef()
   }
 
-  // TODO: denormalize users here
-  // 1. reduce memory
-  // 2. retain hero attribute
-  function upsertUsers(update: any) {
-    const userId = update.user.user_id
-    console.log('upsertUsers', userId, update)
-
-    setUserData((userData) => ({
-      ...userData,
-      [userId]: update
-    }))
-  }
-
-  // update the graph
+  // update the d3 graph data (nodes + links)
   React.useEffect(() => {
     const relationships = {}
     const users = {}
@@ -83,7 +55,7 @@ export const FollowerGraphVisualization: React.FC<{
       relationships[source].add(target)
     }
 
-    for (const userNode of Object.values(userData)) {
+    for (const userNode of Object.values(userNodeMap)) {
       const userId = userNode.user.user_id
       users[userId] = userNode.user
 
@@ -131,46 +103,34 @@ export const FollowerGraphVisualization: React.FC<{
       nodes,
       links
     })
-  }, [visualization, userData, setGraphData])
+  }, [visualization, userNodeMap, setGraphData])
 
   function fetchAndUpsertUserById(userId: string) {
     return fetchClubhouseAPI({
       endpoint: `/db/users/${userId}`
     }).then((res) => {
       if (!res.error) {
-        upsertUsers(res)
+        addUserNode(res)
       }
     })
   }
 
-  function fetchAndUpsertUserByUsername(username: string) {
-    return fetchClubhouseAPI({
-      endpoint: `/db/users/username/${username}`
-    }).then((res) => {
-      if (!res.error) {
-        upsertUsers(res)
-      }
-    })
-  }
-
-  // load the initial user and their immediate followers / following
+  // initial graph layout
   React.useEffect(() => {
-    if (!username) {
+    if (numUsers !== 1) {
       return
     }
 
     setIsLoading(true)
-    fetchAndUpsertUserByUsername(username).then(() => {
-      setTimeout(() => {
-        simulation.current?.zoomToFit(250)
+    setTimeout(() => {
+      simulation.current?.zoomToFit(250)
 
-        setTimeout(() => {
-          simulation.current?.zoomToFit(100)
-          setIsLoading(false)
-        }, 250)
-      }, 500)
-    })
-  }, [username, setUserData, setIsLoading])
+      setTimeout(() => {
+        simulation.current?.zoomToFit(100)
+        setIsLoading(false)
+      }, 250)
+    }, 1000)
+  }, [userNodeMap, setIsLoading])
 
   const onNodeClick = React.useCallback(
     (node, event) => {
@@ -182,10 +142,10 @@ export const FollowerGraphVisualization: React.FC<{
         return false
       }
 
-      if (userData[node.user_id]) {
+      if (userNodeMap[node.user_id]) {
         return
       }
-      console.log('click', node, userData)
+      console.log('click', node, userNodeMap)
 
       setIsLoading(true)
       fetchAndUpsertUserById(node.user_id).then(() => {
@@ -195,7 +155,7 @@ export const FollowerGraphVisualization: React.FC<{
         }, 700)
       })
     },
-    [userData, setUserData, setIsLoading]
+    [userNodeMap, addUserNode, setIsLoading]
   )
 
   const onNodeRightClick = React.useCallback(() => {
@@ -233,7 +193,7 @@ export const FollowerGraphVisualization: React.FC<{
   }, [])
 
   function isHeroNode(node) {
-    return !!userData[node.user_id]
+    return !!userNodeMap[node.user_id]
   }
 
   const drawNode = React.useCallback(
@@ -266,7 +226,7 @@ export const FollowerGraphVisualization: React.FC<{
         // error with image
       }
     },
-    [hoverNode, userData]
+    [hoverNode, userNodeMap]
   )
 
   const wrapperStyle = React.useMemo(
@@ -281,7 +241,7 @@ export const FollowerGraphVisualization: React.FC<{
   // https://chsg.imgix.net/4175_4462da0b-3b07-4ac1-898d-3e96da3bb54a?w=64&auto=format&mask=corners&corner-radius=10,10,10,10
   const imageProxyUrl = 'https://chsg.imgix.net'
   const defaultProfileImageUrl = '/profile.png'
-  const numUsers = Object.keys(userData).length
+  const numUsers = Object.keys(userNodeMap).length
   const numNodes = graphData.nodes.length
   const shouldDislayLargeUsers = numUsers <= 2 || numNodes <= 128
   const imageSize = shouldDislayLargeUsers ? 512 : 64
@@ -317,7 +277,7 @@ export const FollowerGraphVisualization: React.FC<{
 
         <LoadingIndicator
           isLoading={isLoading}
-          initial={{ opacity: Object.keys(userData).length ? 0 : 1 }}
+          initial={{ opacity: numUsers ? 0 : 1 }}
         />
       </div>
 
