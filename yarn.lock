@@ -1843,19 +1843,19 @@ clone@^2.1.2:
   resolved "https://registry.yarnpkg.com/clone/-/clone-2.1.2.tgz#1b7f4b9f591f1e8f83670401600345a02887435f"
   integrity sha1-G39Ln1kfHo+DZwQBYANFoCiHQ18=
 
-clubhouse-client@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/clubhouse-client/-/clubhouse-client-1.2.0.tgz#48167a3528d9f6c63989837d8217ef4c89573802"
-  integrity sha512-rJCZ+dxwrwLc9/ACMrbecJuHz9CgNIJLfz/vFOrR4IQniWBLyesSXYUxMFJ07B/GGlxZ2BGabhLYH9Wl0Lv9dQ==
+clubhouse-client@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/clubhouse-client/-/clubhouse-client-1.3.0.tgz#b0eb47ccb50a6ed1fed1452e964cbca1a604bedb"
+  integrity sha512-qbdAypBHcZrQwKTUMhANkQ9ru8lzSyUHh6/krXpyXaNvJ8nLNoT+GFFO2oxkTsSeMJlnNnW0jNVOKK7F3MjcBg==
   dependencies:
     got "^11.8.2"
     p-throttle "^4.1.1"
     uuid "^8.3.2"
 
-clubhouse-crawler@^1.2.2:
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/clubhouse-crawler/-/clubhouse-crawler-1.2.2.tgz#5c23d78bab335cc98c22f45c497c45355f3c70cb"
-  integrity sha512-ZXRtTBzZDy9e/8yypsLS2/6p1GuNZ2iMfVyMMxfrhe4G4eCHuL9vHJwApiraao5n2Jh1YmBbmDRh+JfokqNcgA==
+clubhouse-crawler@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/clubhouse-crawler/-/clubhouse-crawler-1.3.0.tgz#e7660e084249d7829013a5fb4b05f0eb5fe9a797"
+  integrity sha512-6AvGkJgYB+vJ4j2MFkQcr4ccYZDVQln/pXccBsZOz8RHOuC9FFVghNYZhn9Rf57jjy7LYvhVceBf6x6epjpakA==
   dependencies:
     neo4j-driver "^4.2.3"
     p-map "^4.0.0"
