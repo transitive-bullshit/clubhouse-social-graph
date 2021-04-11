@@ -9,16 +9,11 @@ import {
 
 import { convertNeo4jUser } from 'lib/convert-neo4j-user'
 
+const usernameCache = {}
+
 export default withSession(
   async (req: NextApiRequestSession, res: NextApiResponse) => {
     try {
-      const user = req.session.get('user')
-
-      if (!user) {
-        res.status(401).json({ error: 'Authentication required' })
-        return
-      }
-
       if (req.method !== 'GET') {
         res.status(405).json({ error: 'Method not supported' })
         return
@@ -28,6 +23,18 @@ export default withSession(
 
       if (!username) {
         res.status(400).end()
+        return
+      }
+
+      const user = req.session.get('user')
+
+      if (!user) {
+        res.status(401).json({ error: 'Authentication required' })
+        return
+      }
+
+      if (usernameCache[username]) {
+        res.json(usernameCache[username])
         return
       }
 
@@ -51,8 +58,6 @@ export default withSession(
           }
 
           const userId: number = user.user_id
-
-          // TODO: should we make these DB lookups in parallel?
 
           const results = await session.readTransaction((tx) =>
             Promise.all([
@@ -82,13 +87,16 @@ export default withSession(
             'public, s-maxage=600, max-age=600, stale-while-revalidate=60'
           )
 
-          res.json({
+          const result = {
             user,
             followers,
             following,
             invitees,
             inviteChain
-          })
+          }
+
+          usernameCache[username] = result
+          res.json(result)
         } finally {
           await session.close()
         }

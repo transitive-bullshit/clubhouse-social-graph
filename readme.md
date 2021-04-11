@@ -23,9 +23,9 @@ This webapp is built using [Next.js](https://nextjs.org) deployed to [Vercel](ht
 - User page `/[username]`
   - [ ] Basic user profile info
   - [ ] Links to social
-  - [ ] Followers viz `/[username]/followers`
-  - [ ] Following viz `/[username]/following`
-  - [ ] Invite chain viz `/[username]/invite-chain`
+  - [ ] Followers viz
+  - [ ] Following viz
+  - [x] Invite chain viz
   - [ ] Relationship viz `/[username]/relationship/[username]`
 - User settings page `/[username]/settings`
   - [ ] Adjust viz settings

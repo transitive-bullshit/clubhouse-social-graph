@@ -12,13 +12,6 @@ import { convertNeo4jUser } from 'lib/convert-neo4j-user'
 export default withSession(
   async (req: NextApiRequestSession, res: NextApiResponse) => {
     try {
-      const user = req.session.get('user')
-
-      if (!user) {
-        res.status(401).json({ error: 'Authentication required' })
-        return
-      }
-
       if (req.method !== 'GET') {
         res.status(405).json({ error: 'Method not supported' })
         return
@@ -28,6 +21,13 @@ export default withSession(
 
       if (!userId) {
         res.status(400).end()
+        return
+      }
+
+      const user = req.session.get('user')
+
+      if (!user) {
+        res.status(401).json({ error: 'Authentication required' })
         return
       }
 
