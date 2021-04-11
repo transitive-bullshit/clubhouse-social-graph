@@ -40,9 +40,12 @@ export const SocialGraphVisualization: React.FC = () => {
     links: []
   })
 
-  const numUsers = Object.keys(userNodeMap).length
-  const numNodes = graphData.nodes.length
-  const shouldDislayLargeUsers = numUsers <= 2 || numNodes <= 128
+  const numUsers = React.useMemo(() => Object.keys(userNodeMap).length, [
+    userNodeMap
+  ])
+  const numNodes = React.useMemo(() => graphData.nodes.length, [graphData])
+  const shouldDislayLargeUsers =
+    (numUsers <= 2 || numNodes <= 128) && numNodes <= 500
   const imageSize = shouldDislayLargeUsers ? 512 : 64
   const imageSizeHero = shouldDislayLargeUsers ? 512 : 128
 
@@ -244,15 +247,17 @@ export const SocialGraphVisualization: React.FC = () => {
   )
 
   const params = React.useMemo(() => {
+    const isLarge = numNodes >= 1000
+
     return {
       nodeRelSize: 1,
       nodeVal: 100,
       cooldownTicks: 300,
       dagMode: visualization === 'invites' ? 'bu' : undefined,
-      linkDirectionalParticles: 5,
+      linkDirectionalParticles: isLarge ? 1 : 5,
       linkDirectionalParticleSpeed: 0.005
     }
-  }, [visualization])
+  }, [visualization, numNodes])
 
   return (
     <>
