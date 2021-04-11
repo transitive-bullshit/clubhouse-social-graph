@@ -34,9 +34,11 @@ interface UserData {
   }
 }
 
+export type Visualization = 'followers' | 'following' | 'invites'
+
 export const FollowerGraphVisualization: React.FC<{
   username: string
-  visualization: 'followers' | 'following'
+  visualization: Visualization
 }> = ({ username, visualization }) => {
   const router = useRouter()
   const simulation = React.useRef<any>()
@@ -261,8 +263,9 @@ export const FollowerGraphVisualization: React.FC<{
   const imageProxyUrl = 'https://chsg.imgix.net'
   const defaultProfileImageUrl = '/profile.png'
   const numUsers = Object.keys(userData).length
-  const imageSize = numUsers < 2 ? 256 : 64
-  const imageSizeHero = 128
+  const shouldDislayLargeUsers = numUsers <= 2
+  const imageSize = shouldDislayLargeUsers ? 512 : 64
+  const imageSizeHero = shouldDislayLargeUsers ? 1024 : 128
 
   return (
     <>
@@ -296,9 +299,14 @@ export const FollowerGraphVisualization: React.FC<{
       <div className={styles.images}>
         {graphData.nodes.map((node) => {
           let url = defaultProfileImageUrl
-          const suffix = node.photo_url?.split(':443/')?.[1]
+          let suffix = node.photo_url?.split(':443/')?.[1]
 
           if (suffix) {
+            const thumbnail = '_thumbnail_250x250'
+            if (suffix.endsWith(thumbnail)) {
+              suffix = suffix.substring(0, suffix.length - thumbnail.length)
+            }
+
             // TODO: LOD?
             const size = isHeroNode(node) ? imageSizeHero : imageSize
             url = `${imageProxyUrl}/${suffix}?w=${size}&auto=format&mask=corners`

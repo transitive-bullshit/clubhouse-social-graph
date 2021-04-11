@@ -17,8 +17,9 @@ This webapp is built using [Next.js](https://nextjs.org) deployed to [Vercel](ht
 ## MVP Todo
 
 - Home page `/`
-  - [ ] preview viz
-  - [ ] basic footer
+  - [ ] content
+  - [ ] social proof
+  - [ ] footer
 - User page `/[username]`
   - [ ] Basic user profile info
   - [ ] Links to social
