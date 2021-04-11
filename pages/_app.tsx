@@ -16,6 +16,11 @@ if (typeof window !== 'undefined') {
 // delete theme.styles.global
 
 const theme = extendTheme({
+  colors: {
+    blue: {
+      500: '#00BCFF'
+    }
+  },
   styles: {
     global: {
       body: {

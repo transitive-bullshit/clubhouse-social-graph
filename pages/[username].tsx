@@ -7,7 +7,8 @@ import {
   Layout,
   SocialGraphVisualization,
   VisualizationSelector,
-  QueryParamProvider
+  QueryParamProvider,
+  FocusedUserPane
 } from 'components'
 import { getFullUserByUsername } from 'lib/get-full-user-by-username'
 import { UserNode } from 'lib/types'
@@ -89,6 +90,8 @@ const SocialGraph = ({ userNode }: { userNode: UserNode }) => {
       <SocialGraphVisualization />
 
       <VisualizationSelector />
+
+      <FocusedUserPane />
     </section>
   )
 }

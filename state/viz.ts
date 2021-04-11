@@ -1,18 +1,19 @@
 import React from 'react'
 import { createContainer } from 'unstated-next'
 import { useDisclosure } from '@chakra-ui/react'
-
 import { useQueryParam, StringParam, withDefault } from 'use-query-params'
+import omit from 'lodash.omit'
 
 import { User, UserNode, UserNodeMap, Visualization } from 'lib/types'
+import { fetchClubhouseAPI } from 'lib/fetch-clubhouse-api'
 
 function useViz() {
-  const [viz, setViz] = useQueryParam<string>(
+  const [vizQuery, setVizQuery] = useQueryParam<string>(
     'viz',
     withDefault(StringParam, 'following')
   )
   const [visualization, setVisualization] = React.useState<Visualization>(
-    viz as Visualization
+    vizQuery as Visualization
   )
   const [userNodeMap, setUserNodeMap] = React.useState<UserNodeMap>({})
   const [focusedUser, setFocusedUser] = React.useState<User>(null)
@@ -31,11 +32,26 @@ function useViz() {
     [setUserNodeMap]
   )
 
-  React.useEffect(() => {
-    setViz(visualization === 'following' ? undefined : visualization)
-  }, [visualization, setViz])
+  const removeUserNode = React.useCallback(
+    (userId: string | number) => {
+      setUserNodeMap((userNodeMap) => omit(userNodeMap, userId))
+    },
+    [setUserNodeMap]
+  )
 
-  console.log({ focusedUser })
+  function fetchAndUpsertUserById(userId: string) {
+    return fetchClubhouseAPI({
+      endpoint: `/db/users/${userId}`
+    }).then((res) => {
+      if (!res.error) {
+        addUserNode(res)
+      }
+    })
+  }
+
+  React.useEffect(() => {
+    setVizQuery(visualization === 'following' ? undefined : visualization)
+  }, [visualization, setVizQuery])
 
   return {
     visualization,
@@ -46,7 +62,7 @@ function useViz() {
 
     userNodeMap,
     addUserNode,
-    setUserNodeMap,
+    removeUserNode,
 
     infoModal
   }

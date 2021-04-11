@@ -15,6 +15,7 @@ import { AiOutlineUser, AiOutlineHome } from 'react-icons/ai'
 
 import { LoginModal } from 'components'
 import { User } from 'state/user'
+import { getProfilePhotoUrl } from 'lib/get-profile-photo-url'
 
 import styles from './styles.module.css'
 
@@ -55,7 +56,11 @@ export const NavHeader: React.FC = () => {
             {isLoggedIn ? (
               <Menu>
                 <MenuButton>
-                  <Avatar src={user.photo_url} name={user.name} size='md' />
+                  <Avatar
+                    src={getProfilePhotoUrl(user)}
+                    name={user.name}
+                    size='md'
+                  />
                 </MenuButton>
 
                 <MenuList>

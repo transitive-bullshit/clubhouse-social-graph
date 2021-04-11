@@ -5,6 +5,7 @@ import { useRouter } from 'next/router'
 import { User } from 'lib/types'
 import { fetchClubhouseAPI } from 'lib/fetch-clubhouse-api'
 import { getApproxNumRepresentation } from 'lib/get-approx-num-representation'
+import { getProfilePhotoUrl } from 'lib/get-profile-photo-url'
 import { Viz } from 'state/viz'
 
 import { LoadingIndicator } from '../LoadingIndicator/LoadingIndicator'
@@ -40,8 +41,6 @@ export const SocialGraphVisualization: React.FC = () => {
     links: []
   })
 
-  const imageProxyUrl = 'https://chsg.imgix.net'
-  const defaultProfileImageUrl = '/profile.png'
   const numUsers = Object.keys(userNodeMap).length
   const numNodes = graphData.nodes.length
   const shouldDislayLargeUsers = numUsers <= 2 || numNodes <= 128
@@ -143,6 +142,18 @@ export const SocialGraphVisualization: React.FC = () => {
     }, 1000)
   }, [userNodeMap, setIsLoading])
 
+  React.useEffect(() => {
+    if (numUsers < 1) {
+      return
+    }
+
+    setIsLoading(true)
+    setTimeout(() => {
+      simulation.current?.zoomToFit(250)
+      setIsLoading(false)
+    }, 250)
+  }, [visualization])
+
   const onNodeClick = React.useCallback(
     (node, event) => {
       event.preventDefault()
@@ -174,14 +185,6 @@ export const SocialGraphVisualization: React.FC = () => {
   const onBackgroundClick = React.useCallback(() => {
     setFocusedUser(null)
   }, [setFocusedUser])
-
-  React.useEffect(() => {
-    setIsLoading(true)
-    setTimeout(() => {
-      simulation.current?.zoomToFit(250)
-      setIsLoading(false)
-    }, 250)
-  }, [visualization])
 
   const onNodeRightClick = React.useCallback(() => {
     // View @node.username
@@ -298,22 +301,10 @@ export const SocialGraphVisualization: React.FC = () => {
 
       <div className={styles.images}>
         {graphData.nodes.map((node) => {
-          let url = defaultProfileImageUrl
-          let suffix = node.photo_url?.split(':443/')?.[1]
-
-          if (suffix) {
-            const thumbnail = '_thumbnail_250x250'
-            if (suffix.endsWith(thumbnail)) {
-              suffix = suffix.substring(0, suffix.length - thumbnail.length)
-            }
-
-            // TODO: LOD?
-            const size = isHeroNode(node) ? imageSizeHero : imageSize
-            url = `${imageProxyUrl}/${suffix}?w=${size}&auto=format&mask=corners`
-            // url = `/_next/image?url=${encodeURIComponent(
-            //   node.photo_url
-            // )}&w=32&q=75`
-          }
+          const width = isHeroNode(node) ? imageSizeHero : imageSize
+          const url = getProfilePhotoUrl(node, {
+            width
+          })
 
           return (
             <img

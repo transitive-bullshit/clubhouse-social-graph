@@ -12,8 +12,8 @@ export const convertNeo4jUser = (user?: any): User | null => {
     return {
       ...u,
       // simplify date formats
-      time_created: u.time_created?.toString(),
-      time_scraped: u.time_scraped?.toString()
+      time_created: u.time_created?.toString() || null,
+      time_scraped: u.time_scraped?.toString() || null
     }
   } else {
     return null
