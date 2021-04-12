@@ -85,7 +85,7 @@ export const InfoModal = () => {
               For more info, including a breakdown of how this was built, check
               out the{' '}
               <Link href='/about'>
-                <a>About Page</a>
+                <a>about page</a>
               </Link>
               .
             </p>
