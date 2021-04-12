@@ -11,13 +11,17 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: calc(min(740px, var(--max-width)));
+  max-width: calc(min(800px, var(--max-width)));
   text-align: center;
+}
+
+.intro h1 {
+  font-size: 40px;
 }
 
 .intro h2 {
   font-weight: 400;
-  max-width: calc(min(600px, var(--max-width)));
+  max-width: calc(min(610px, var(--max-width)));
   margin: 0.5em 0 2em;
 }
 

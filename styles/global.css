@@ -51,6 +51,5 @@ h2 {
 }
 
 .notion .notion-h1:first-of-type {
-  width: 100%;
-  text-align: center;
+  align-self: center;
 }

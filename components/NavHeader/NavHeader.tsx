@@ -71,7 +71,7 @@ export const NavHeader: React.FC = () => {
                     icon={<Icon as={AiOutlineUser} />}
                     onClick={onClickProfile}
                   >
-                    Profile
+                    Social Graph
                   </MenuItem>
 
                   <MenuItem icon={<Icon as={IoIosLogOut} />} onClick={logout}>

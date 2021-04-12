@@ -29,8 +29,8 @@ export default function HomePage() {
           <h1>Understand Your Clubhouse Social Graph</h1>
 
           <h2>
-            Cool visualizations for all your Clubhouse peeps, invite chain, and
-            follower graph 🤙
+            Gain insight into Clubhouse with powerful visualizations of your
+            invite chain and follower graph 🤙
           </h2>
 
           <HeroCTA />

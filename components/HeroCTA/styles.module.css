@@ -4,3 +4,9 @@
   flex-direction: column;
   align-items: center;
 }
+
+.actions button {
+  font-size: 1.2em;
+  font-weight: 700;
+  padding: 1.5em;
+}
