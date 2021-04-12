@@ -11,7 +11,7 @@ export default function HomePage() {
 
   return (
     <Layout full>
-      {hasMounted && (
+      {hasMounted && typeof window !== 'undefined' && window.innerWidth > 500 && (
         <ParticleAnimation
           className={styles.particles}
           background={{

@@ -50,12 +50,16 @@ export const NavFooter: React.FC = () => {
           href: '/erika'
         },
         {
-          title: 'Andrew Chen',
-          href: '/andrew'
+          title: 'Jared Leto',
+          href: '/jaredleto'
         },
         {
           title: 'Chamath',
           href: '/chamath'
+        },
+        {
+          title: 'Andrew Chen',
+          href: '/andrew'
         },
         {
           title: 'Li Jin',
@@ -80,6 +84,14 @@ export const NavFooter: React.FC = () => {
         {
           title: 'Marc Andreessen',
           href: '/pmarca'
+        },
+        {
+          title: 'Rohan Seth',
+          href: '/rohan'
+        },
+        {
+          title: 'Paul Davidson',
+          href: '/paul'
         },
         {
           title: 'Tim Saval',

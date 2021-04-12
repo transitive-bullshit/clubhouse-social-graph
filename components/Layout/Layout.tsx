@@ -1,4 +1,5 @@
 import React from 'react'
+import cs from 'classnames'
 
 import { User } from 'state/user'
 
@@ -18,7 +19,7 @@ export const Layout: React.FC<{
     <User.Provider>
       <Head title={title} description={description} twitter={twitter} />
 
-      <div className={styles.body}>
+      <div className={cs(styles.body, full ? 'full-page' : 'fixed-page')}>
         <NavHeader />
 
         <main className={styles.main}>{children}</main>

@@ -1,5 +1,5 @@
 .footer {
-  padding: 2em 0;
+  padding: 2em 0 1.5em;
   display: flex;
   justify-content: center;
 }
@@ -22,7 +22,11 @@
 }
 
 .influencers {
-  flex: 2;
+  flex: 3;
+}
+
+.socials {
+  flex: 0.5;
 }
 
 .links {
@@ -65,4 +69,27 @@
 
 .github:hover {
   color: #6e5494;
+}
+
+@media (max-width: 700px) {
+  .content {
+    flex-direction: column;
+  }
+
+  .section {
+    margin-bottom: 3em;
+  }
+
+  .section:last-child {
+    margin-bottom: 1.5em;
+  }
+
+  .section h3 {
+    font-size: 36px;
+  }
+
+  .links {
+    font-size: 24px;
+    gap: 16px;
+  }
 }

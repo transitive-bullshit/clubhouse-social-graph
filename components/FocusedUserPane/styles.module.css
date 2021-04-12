@@ -84,3 +84,9 @@
   top: -1px;
   left: 4px;
 }
+
+@media (max-width: 700px) {
+  .container {
+    display: none;
+  }
+}

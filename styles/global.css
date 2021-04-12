@@ -55,5 +55,11 @@ h2 {
 }
 
 .notion-viewport {
-  position: relative;
+  position: relative !important;
+}
+
+@media (max-width: 700px) {
+  .fixed-page header > div > a:first-of-type {
+    visibility: hidden;
+  }
 }
