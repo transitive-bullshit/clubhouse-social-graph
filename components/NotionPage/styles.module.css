@@ -1,0 +1,9 @@
+.notionSection {
+  padding-top: 80px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
