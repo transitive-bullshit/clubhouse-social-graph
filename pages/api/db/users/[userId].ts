@@ -24,12 +24,12 @@ export default withSession(
         return
       }
 
-      const user = req.session.get('user')
+      // const user = req.session.get('user')
 
-      if (!user) {
-        res.status(401).json({ error: 'Authentication required' })
-        return
-      }
+      // if (!user) {
+      //   res.status(401).json({ error: 'Authentication required' })
+      //   return
+      // }
 
       let driver: neo4j.Driver
 
