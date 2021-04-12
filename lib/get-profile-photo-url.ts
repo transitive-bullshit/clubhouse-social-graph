@@ -21,6 +21,8 @@ export const getProfilePhotoUrl = (
     }
 
     url = `${imageProxyUrl}/${suffix}?w=${width}&auto=format&mask=corners`
+  } else if (user?.photo_url?.startsWith('/corgis/')) {
+    return user.photo_url
   }
 
   return url
