@@ -15,6 +15,7 @@ import {
 
 import { getFullUserByUsername } from 'lib/get-full-user-by-username'
 import { UserNode } from 'lib/types'
+import exampleUsers from 'lib/example-users'
 import { Viz } from 'state/viz'
 
 import styles from 'styles/user.module.css'
@@ -60,8 +61,10 @@ export const getStaticProps = async (context) => {
 }
 
 export async function getStaticPaths() {
+  const paths = exampleUsers.map((u) => u.href)
+
   return {
-    paths: [],
+    paths,
     fallback: true
   }
 }

@@ -4,6 +4,7 @@ import cs from 'classnames'
 import { FaTwitter, FaGithub } from 'react-icons/fa'
 
 import { User } from 'state/user'
+import exampleUsers from 'lib/example-users'
 
 import styles from './styles.module.css'
 
@@ -39,73 +40,8 @@ export const NavFooter: React.FC = () => {
     },
     {
       title: 'Example Users',
-      key: 'influencers',
-      links: [
-        {
-          title: 'Mr. Beast',
-          href: '/mrbeast'
-        },
-        {
-          title: 'Erika Batista',
-          href: '/erika'
-        },
-        {
-          title: 'Jared Leto',
-          href: '/jaredleto'
-        },
-        {
-          title: 'Chamath',
-          href: '/chamath'
-        },
-        {
-          title: 'Andrew Chen',
-          href: '/andrew'
-        },
-        {
-          title: 'Li Jin',
-          href: '/li'
-        },
-        {
-          title: 'Elon Musk',
-          href: '/elonmusk?viz=followers'
-        },
-        {
-          title: 'Mark Zuckerberg',
-          href: '/zuck'
-        },
-        {
-          title: 'Casey Neistat',
-          href: '/caseyneistat'
-        },
-        {
-          title: 'Felicia Horowitz',
-          href: '/feliciahorowitz'
-        },
-        {
-          title: 'Marc Andreessen',
-          href: '/pmarca'
-        },
-        {
-          title: 'Rohan Seth',
-          href: '/rohan'
-        },
-        {
-          title: 'Paul Davidson',
-          href: '/paul'
-        },
-        {
-          title: 'Tim Saval',
-          href: '/timsaval'
-        },
-        {
-          title: 'Sadie',
-          href: '/sincerelysadie'
-        },
-        {
-          title: 'Travis Fischer',
-          href: '/transitive_bs'
-        }
-      ]
+      key: 'users',
+      links: exampleUsers
     }
   ]
 
