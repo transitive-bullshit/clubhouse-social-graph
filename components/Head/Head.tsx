@@ -1,6 +1,8 @@
 import React from 'react'
 import NextHead from 'next/head'
 
+const siteName = 'Clubhouse Social Graph'
+
 export const Head: React.FC<{
   title?: string
   domain?: string
@@ -8,9 +10,9 @@ export const Head: React.FC<{
   description?: string
   socialImage?: string
 }> = ({
-  title = 'Clubhouse Social Graph',
+  title = siteName,
   domain = 'clubhousesocialgraph.com',
-  twitter = 'clubhouseSocialGraph',
+  twitter = 'transitive_bs',
   description = 'Visualizations for understanding your Clubhouse social graph.',
   socialImage = null
 }) => {
@@ -20,7 +22,7 @@ export const Head: React.FC<{
 
       <meta name='twitter:title' content={title} />
       <meta property='og:title' content={title} />
-      <meta property='og:site_name' content={title} />
+      <meta property='og:site_name' content={siteName} />
 
       <meta property='twitter:domain' content={domain} />
       <meta name='twitter:creator' content={`@${twitter}`} />

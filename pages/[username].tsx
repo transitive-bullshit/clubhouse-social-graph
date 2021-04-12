@@ -67,8 +67,16 @@ export async function getStaticPaths() {
 }
 
 export default function UserDetailPage({ userNode }: { userNode: UserNode }) {
+  const name = userNode?.user?.name
+  const bio = userNode?.user?.bio
+  const title = name ? `${name} - Social Graph` : undefined
+  const description = name
+    ? `Visualize the Clubhouse social graph of ${name}.${bio ? ' ' + bio : ''}`
+    : undefined
+  const twitter = userNode?.user?.twitter ?? 'transitive_bs'
+
   return (
-    <Layout>
+    <Layout title={title} description={description} twitter={twitter}>
       <QueryParamProvider>
         <Viz.Provider>
           <SocialGraph userNode={userNode} />
