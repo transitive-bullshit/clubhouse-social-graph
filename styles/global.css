@@ -46,14 +46,6 @@ h2 {
   font-size: 24px;
 }
 
-.notion {
-  /* font-family: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif !important; */
-}
-
-.notion .notion-h1:first-of-type {
-  align-self: center;
-}
-
 .notion-viewport {
   position: relative !important;
 }
