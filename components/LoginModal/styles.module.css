@@ -1,0 +1,16 @@
+.details {
+  margin-top: 1em;
+  font-size: 0.85em;
+}
+
+.details:first-of-type {
+  margin-top: 2em;
+}
+
+.details a {
+  color: #007099;
+}
+
+.details a:hover {
+  color: #00afed;
+}

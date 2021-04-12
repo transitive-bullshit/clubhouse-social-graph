@@ -1,4 +1,5 @@
 import React from 'react'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 import {
   Button,
@@ -16,6 +17,8 @@ import {
 
 import { fetchClubhouseAPI } from 'lib/fetch-clubhouse-api'
 import { User } from 'state/user'
+
+import styles from './styles.module.css'
 
 export const LoginModal: React.FC<{
   isOpen: boolean
@@ -119,6 +122,26 @@ export const LoginModal: React.FC<{
                   onChange={onChangePhoneNumber}
                   onKeyPress={onKeyPressPhoneNumber}
                 />
+
+                <p className={styles.details}>
+                  We use the Clubhouse API to log you in. Clubhouse only allows
+                  you to log in to a single device at a time, so you may be
+                  temporarily logged out of your mobile account.
+                </p>
+
+                <p className={styles.details}>
+                  This is necessary in order to view your profile and follower
+                  data.{' '}
+                  <i>Our use of the Clubhouse API is strictly read-only</i>.
+                </p>
+
+                <p className={styles.details}>
+                  For more info on how this works, visit our{' '}
+                  <Link href='/about'>
+                    <a>about page</a>
+                  </Link>
+                  .
+                </p>
               </FormControl>
             ) : (
               <FormControl>
