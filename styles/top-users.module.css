@@ -69,6 +69,14 @@
   overflow: hidden;
 }
 
+.bio a {
+  color: #007099;
+}
+
+.bio a:hover {
+  color: #00afed;
+}
+
 .actions {
   display: flex;
   flex-direction: column;

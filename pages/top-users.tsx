@@ -1,5 +1,6 @@
 import React from 'react'
 import Link from 'next/link'
+import Linkify from 'react-linkify'
 
 import * as db from 'clubhouse-crawler'
 import * as neo4j from 'neo4j-driver'
@@ -18,6 +19,16 @@ import { Avatar } from 'components/Avatar/Avatar'
 import { Paper } from 'components/Paper/Paper'
 
 import styles from 'styles/top-users.module.css'
+
+const decorateLink = (
+  decoratedHref: string,
+  decoratedText: string,
+  key: number
+) => (
+  <a key={key} href={decoratedHref} target='_blank' rel='noopener noreferrer'>
+    {decoratedText}
+  </a>
+)
 
 export const getStaticProps = async () => {
   try {
@@ -50,7 +61,7 @@ export const getStaticProps = async () => {
             photo_url:
               'https://clubhouseprod.s3.amazonaws.com:443/2481724_7d2d0da1-cd66-4dd6-bc39-d86082f6d0d4',
             num_following: 'null',
-            bio: `Okay okay, so this last one's fake.. I'm not actually one of the top users on Clubhouse.. but I do control the algorithm behind this chart.. 😂`
+            bio: `Okay okay, so this last one's fake.. I'm not actually one of the top users on Clubhouse.. but I do control the algorithm behind this chart.. 😂\ntransitivebullsh.it 💪`
           } as any
         ])
       } finally {
@@ -73,7 +84,7 @@ export default function TopUsersPage({ users }: { users: User[] }) {
   return (
     <Layout full>
       <section className={styles.topUsersSection}>
-        <h1>Top 100 Users</h1>
+        <h1>Top 100 Clubhouse Users</h1>
 
         <div className={styles.usersGallery}>
           {users?.map((user) => {
@@ -114,7 +125,11 @@ export default function TopUsersPage({ users }: { users: User[] }) {
                   </Link>
                 </div>
 
-                <p className={styles.bio}>{user.bio}</p>
+                <p className={styles.bio}>
+                  <Linkify componentDecorator={decorateLink}>
+                    {user.bio}
+                  </Linkify>
+                </p>
 
                 <div className={styles.actions}>
                   <Link href={profileUrl}>

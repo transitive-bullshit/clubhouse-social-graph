@@ -27,6 +27,7 @@ This webapp is built using [Next.js](https://nextjs.org) deployed to [Vercel](ht
   - [x] Following viz
   - [x] Invite chain viz
   - [ ] Relationship viz `/[username]/relationship/[username]`
+  - [x] [Linkify](https://github.com/tasti/react-linkify) bios
 - User settings page `/[username]/settings`
   - [ ] Adjust viz settings
   - [ ] Logout
@@ -39,6 +40,7 @@ This webapp is built using [Next.js](https://nextjs.org) deployed to [Vercel](ht
   - [ ] Finalize approach to auth
 - [x] About page `/about`
 - [x] Data page `/data`
+- [x] Top users `/top-users`
 
 ## License
 
