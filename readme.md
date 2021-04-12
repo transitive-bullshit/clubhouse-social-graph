@@ -34,6 +34,8 @@ This webapp is built using [Next.js](https://nextjs.org) deployed to [Vercel](ht
   - [x] Navigate to user profiles
   - [ ] Navigate to user relationship viz
   - [x] Add fallback profile photo
+  - [ ] Add info modal
+  - [ ] Add zoom in / out buttons
 - [ ] About page `/about`
 - [ ] Data page `/data`
 

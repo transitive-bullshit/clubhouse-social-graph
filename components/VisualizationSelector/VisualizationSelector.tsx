@@ -2,6 +2,7 @@ import React from 'react'
 import cs from 'classnames'
 
 import { Viz } from 'state/viz'
+import { Paper } from '../Paper/Paper'
 
 import styles from './styles.module.css'
 
@@ -30,7 +31,7 @@ export const VisualizationSelector = () => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.content}>
+      <Paper className={styles.content}>
         <div
           className={cs(
             styles.option,
@@ -60,7 +61,7 @@ export const VisualizationSelector = () => {
         >
           Invites
         </div>
-      </div>
+      </Paper>
     </div>
   )
 }

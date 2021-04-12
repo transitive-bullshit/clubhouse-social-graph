@@ -5,9 +5,11 @@ import { useRouter } from 'next/router'
 import { FaTwitter, FaInstagram } from 'react-icons/fa'
 import { HiOutlineExternalLink } from 'react-icons/hi'
 
+import { Avatar } from '../Avatar/Avatar'
+import { Paper } from '../Paper/Paper'
+
 import { Viz } from 'state/viz'
 import { getApproxNumRepresentation } from 'lib/get-approx-num-representation'
-import { Avatar } from '../Avatar/Avatar'
 
 import styles from './styles.module.css'
 
@@ -51,7 +53,7 @@ export const FocusedUserPane = () => {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
-          <div className={styles.content}>
+          <Paper className={styles.content}>
             <div className={styles.header}>
               <div className={styles.lhs}>
                 <Avatar user={user} size='lg' />
@@ -142,7 +144,7 @@ export const FocusedUserPane = () => {
                 )}
               </div>
             )}
-          </div>
+          </Paper>
         </motion.div>
       )}
     </AnimatePresence>
