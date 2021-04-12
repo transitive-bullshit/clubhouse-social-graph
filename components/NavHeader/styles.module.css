@@ -26,6 +26,7 @@
   align-items: center;
   font-weight: 700;
   color: var(--text-h-color);
+  pointer-events: all;
 }
 
 .logo {

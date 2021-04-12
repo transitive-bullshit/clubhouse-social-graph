@@ -25,7 +25,7 @@ const theme = extendTheme({
     global: {
       body: {
         color: 'var(--text-color)',
-        bg: 'var(--bg-color)'
+        bg: 'var(--body-bg-color)'
       },
       'h1,h2,h3,h4,h5,h6': {
         fontWeight: '700',
@@ -42,6 +42,9 @@ const theme = extendTheme({
   fonts: {
     body: `'Nunito', -apple-system, BlinkMacSystemFont, sans-serif`,
     heading: `'Nunito', -apple-system, BlinkMacSystemFont, sans-serif`
+  },
+  light: {
+    bg: 'var(--body-bg-color)'
   }
 })
 
