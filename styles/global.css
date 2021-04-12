@@ -53,3 +53,7 @@ h2 {
 .notion .notion-h1:first-of-type {
   align-self: center;
 }
+
+.notion-viewport {
+  position: relative;
+}

@@ -1,5 +1,6 @@
 import React from 'react'
 import cs from 'classnames'
+import { Tooltip } from '@chakra-ui/react'
 
 import { Viz } from 'state/viz'
 import { Paper } from '../Paper/Paper'
@@ -32,35 +33,53 @@ export const VisualizationSelector = () => {
   return (
     <div className={styles.container}>
       <Paper className={styles.content}>
-        <div
-          className={cs(
-            styles.option,
-            visualization === 'followers' && styles.selected
-          )}
-          onClick={onSelectFollowers}
+        <Tooltip
+          label='View a sample of your followers'
+          aria-label='View followers'
+          placement='bottom'
         >
-          Followers
-        </div>
+          <div
+            className={cs(
+              styles.option,
+              visualization === 'followers' && styles.selected
+            )}
+            onClick={onSelectFollowers}
+          >
+            Followers
+          </div>
+        </Tooltip>
 
-        <div
-          className={cs(
-            styles.option,
-            visualization === 'following' && styles.selected
-          )}
-          onClick={onSelectFollowing}
+        <Tooltip
+          label="View a sample of the users that you're following"
+          aria-label='View following'
+          placement='bottom'
         >
-          Following
-        </div>
+          <div
+            className={cs(
+              styles.option,
+              visualization === 'following' && styles.selected
+            )}
+            onClick={onSelectFollowing}
+          >
+            Following
+          </div>
+        </Tooltip>
 
-        <div
-          className={cs(
-            styles.option,
-            visualization === 'invites' && styles.selected
-          )}
-          onClick={onSelectInvites}
+        <Tooltip
+          label='View your invite chain'
+          aria-label='View your invite chain'
+          placement='bottom'
         >
-          Invites
-        </div>
+          <div
+            className={cs(
+              styles.option,
+              visualization === 'invites' && styles.selected
+            )}
+            onClick={onSelectInvites}
+          >
+            Invites
+          </div>
+        </Tooltip>
       </Paper>
     </div>
   )

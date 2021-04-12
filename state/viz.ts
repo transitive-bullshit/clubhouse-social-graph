@@ -60,12 +60,13 @@ function useViz() {
     (userNode: UserNode) => {
       const userId = userNode.user.user_id
       setIsLoading(true)
+      setFocusedUser(userNode.user)
       setUserNodeMap({
         [userId]: userNode
       })
       setIsLoading(false)
     },
-    [setUserNodeMap, setIsLoading]
+    [setUserNodeMap, setFocusedUser, setIsLoading]
   )
 
   const resetUserNodeMapById = React.useCallback(

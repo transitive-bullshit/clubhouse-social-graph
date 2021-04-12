@@ -54,3 +54,11 @@
 .nav a:last-child {
   margin-right: 0;
 }
+
+.avatar:hover {
+  opacity: 0.8;
+}
+
+.avatar:active {
+  opacity: 0.9;
+}

@@ -10,7 +10,7 @@ export default function HomePage() {
   }, [])
 
   return (
-    <Layout>
+    <Layout full>
       {hasMounted && (
         <ParticleAnimation
           className={styles.particles}

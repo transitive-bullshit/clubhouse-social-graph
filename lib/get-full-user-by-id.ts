@@ -10,9 +10,9 @@ export const getFullUserById = async (
   const results = await session.readTransaction((tx) =>
     Promise.all([
       db.getUserById(tx, userId),
-      db.getUserFollowersById(tx, userId),
-      db.getFollowingUsersById(tx, userId),
-      db.getUsersInvitedById(tx, userId),
+      db.getUserFollowersById(tx, userId, { limit: 600 }),
+      db.getFollowingUsersById(tx, userId, { limit: 600 }),
+      db.getUsersInvitedById(tx, userId, { limit: 400 }),
       db.getUserInviteChainByUserId(tx, userId)
     ])
   )

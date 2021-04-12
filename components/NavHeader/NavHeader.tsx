@@ -55,7 +55,7 @@ export const NavHeader: React.FC = () => {
           <nav className={styles.nav}>
             {isLoggedIn ? (
               <Menu>
-                <MenuButton>
+                <MenuButton className={styles.avatar}>
                   <Avatar user={user} />
                 </MenuButton>
 
