@@ -1,6 +1,7 @@
 import React from 'react'
 import { ExtendedRecordMap } from 'notion-types'
 import { NotionRenderer } from 'react-notion-x'
+import { Tweet } from 'react-static-tweets'
 
 import { Layout } from 'components'
 
@@ -14,6 +15,9 @@ export function NotionPage({ recordMap }: { recordMap: ExtendedRecordMap }) {
           recordMap={recordMap}
           fullPage={false}
           darkMode={false}
+          components={{
+            tweet: Tweet
+          }}
         />
       </section>
     </Layout>
