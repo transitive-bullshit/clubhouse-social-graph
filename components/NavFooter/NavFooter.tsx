@@ -25,6 +25,10 @@ export const NavFooter: React.FC = () => {
           href: '/about'
         },
         {
+          title: 'Top 100 Users',
+          href: '/top-users'
+        },
+        {
           title: 'Clubhouse Data',
           href: '/data'
         },

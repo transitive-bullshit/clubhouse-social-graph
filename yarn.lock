@@ -5096,11 +5096,6 @@ rc-util@^5.2.1, rc-util@^5.3.0, rc-util@^5.5.0, rc-util@^5.7.0:
     react-is "^16.12.0"
     shallowequal "^1.1.0"
 
-react-block-image@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/react-block-image/-/react-block-image-1.0.0.tgz#5c46d7a115fa7efa70d477a2580ec0c9b2106283"
-  integrity sha1-XEbXoRX6fvpw1HeiWA7AybIQYoM=
-
 react-clientside-effect@^1.2.2:
   version "1.2.5"
   resolved "https://registry.yarnpkg.com/react-clientside-effect/-/react-clientside-effect-1.2.5.tgz#e2c4dc3c9ee109f642fac4f5b6e9bf5bcd2219a3"

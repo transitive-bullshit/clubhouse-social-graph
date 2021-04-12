@@ -1,9 +1,9 @@
 import React from 'react'
 import cs from 'classnames'
-import BlockImage from 'react-block-image'
 
 import { User } from 'lib/types'
 import { getProfilePhotoUrl } from 'lib/get-profile-photo-url'
+import { BlockImage } from '../BlockImage/BlockImage'
 
 import styles from './styles.module.css'
 
@@ -13,7 +13,7 @@ export const Avatar: React.FC<{
   user: User
   className?: string
   width?: number
-  size?: 'lg' | 'md'
+  size?: 'md' | 'lg' | 'xl'
 }> = ({ user, className, width, size = 'md', ...rest }) => {
   return (
     <BlockImage

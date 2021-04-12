@@ -44,6 +44,7 @@ export const getStaticProps = async (context) => {
           }
         }
         props.userNode = userNode
+        console.log(props.userNode.user)
       } finally {
         await session.close()
       }
