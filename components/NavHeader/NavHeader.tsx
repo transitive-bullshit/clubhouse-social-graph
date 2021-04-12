@@ -1,7 +1,6 @@
 import React from 'react'
 import Link from 'next/link'
 import {
-  Avatar,
   Button,
   Icon,
   Menu,
@@ -13,9 +12,10 @@ import { useRouter } from 'next/router'
 import { IoIosLogOut } from 'react-icons/io'
 import { AiOutlineUser, AiOutlineHome } from 'react-icons/ai'
 
-import { LoginModal } from 'components'
+import { LoginModal } from '../LoginModal/LoginModal'
+import { Avatar } from '../Avatar/Avatar'
+
 import { User } from 'state/user'
-import { getProfilePhotoUrl } from 'lib/get-profile-photo-url'
 
 import styles from './styles.module.css'
 
@@ -56,11 +56,7 @@ export const NavHeader: React.FC = () => {
             {isLoggedIn ? (
               <Menu>
                 <MenuButton>
-                  <Avatar
-                    src={getProfilePhotoUrl(user)}
-                    name={user.name}
-                    size='md'
-                  />
+                  <Avatar user={user} />
                 </MenuButton>
 
                 <MenuList>

@@ -34,6 +34,11 @@ export const getStaticProps = async (context) => {
       try {
         session = driver.session({ defaultAccessMode: 'READ' })
         const userNode = await getFullUserByUsername(session, username)
+        if (!userNode) {
+          return {
+            notFound: true
+          }
+        }
         props.userNode = userNode
       } finally {
         await session.close()
@@ -77,13 +82,13 @@ export default function UserDetailPage({
 }
 
 const SocialGraph = ({ userNode }: { userNode: UserNode }) => {
-  const { addUserNode } = Viz.useContainer()
+  const { resetUserNodeMap } = Viz.useContainer()
 
   React.useEffect(() => {
     if (!userNode) return
 
-    addUserNode(userNode)
-  }, [userNode, addUserNode])
+    resetUserNodeMap(userNode)
+  }, [userNode, resetUserNodeMap])
 
   return (
     <section className={styles.fullPage}>

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Avatar, Button } from '@chakra-ui/react'
+import { Button } from '@chakra-ui/react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useRouter } from 'next/router'
 import { FaTwitter, FaInstagram } from 'react-icons/fa'
@@ -7,7 +7,7 @@ import { HiOutlineExternalLink } from 'react-icons/hi'
 
 import { Viz } from 'state/viz'
 import { getApproxNumRepresentation } from 'lib/get-approx-num-representation'
-import { getProfilePhotoUrl } from 'lib/get-profile-photo-url'
+import { Avatar } from '../Avatar/Avatar'
 
 import styles from './styles.module.css'
 
@@ -16,8 +16,8 @@ export const FocusedUserPane = () => {
     focusedUser: user,
     userNodeMap,
     addUserById,
-    resetUserNodeMapById,
-    removeUserNode
+    removeUserNode,
+    isLoading
   } = Viz.useContainer()
   const router = useRouter()
 
@@ -37,7 +37,6 @@ export const FocusedUserPane = () => {
 
   const onClickViewGraph = React.useCallback(() => {
     router.push(`/${user.username}`)
-    resetUserNodeMapById(user.user_id)
   }, [router, user])
 
   return (
@@ -45,6 +44,7 @@ export const FocusedUserPane = () => {
       {user && (
         <motion.div
           className={styles.container}
+          transition={{ duration: 0.25 }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -52,11 +52,7 @@ export const FocusedUserPane = () => {
           <div className={styles.content}>
             <div className={styles.header}>
               <div className={styles.lhs}>
-                <Avatar
-                  src={getProfilePhotoUrl(user)}
-                  name={user.name}
-                  size='lg'
-                />
+                <Avatar user={user} size='lg' />
               </div>
 
               <div className={styles.rhs}>
@@ -76,11 +72,19 @@ export const FocusedUserPane = () => {
 
             <div className={styles.actions}>
               {isExpanded ? (
-                <Button colorScheme='blue' onClick={onClickCollapse}>
+                <Button
+                  colorScheme='blue'
+                  onClick={onClickCollapse}
+                  isLoading={isLoading}
+                >
                   Collapse
                 </Button>
               ) : (
-                <Button colorScheme='blue' onClick={onClickExpand}>
+                <Button
+                  colorScheme='blue'
+                  onClick={onClickExpand}
+                  isLoading={isLoading}
+                >
                   Expand
                 </Button>
               )}
@@ -89,6 +93,7 @@ export const FocusedUserPane = () => {
                 colorScheme='blue'
                 onClick={onClickViewGraph}
                 isDisabled={isActiveUser}
+                isLoading={isLoading}
               >
                 View Graph
               </Button>

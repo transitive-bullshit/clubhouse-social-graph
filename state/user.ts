@@ -49,11 +49,6 @@ function useUser() {
     updateUser().then(() => {
       setIsLoading(false)
     })
-
-    // If redirectTo is set, redirect if the user was not found.
-    // if (redirectTo && !isLoggedIn) {
-    //   Router.push(redirectTo)
-    // }
   }, [])
 
   return { user, isLoggedIn, isLoading, updateUser, loginModal, logout }

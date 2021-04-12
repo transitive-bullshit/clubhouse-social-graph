@@ -6,6 +6,10 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 
 module.exports = withBundleAnalyzer({
   images: {
-    domains: ['pbs.twimg.com', 'clubhouseprod.s3.amazonaws.com']
+    domains: [
+      'pbs.twimg.com',
+      'clubhouseprod.s3.amazonaws.com',
+      'chsg.imgix.net'
+    ]
   }
 })

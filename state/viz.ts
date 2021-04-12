@@ -56,6 +56,18 @@ function useViz() {
     [addUserNode, setIsLoading, simulation]
   )
 
+  const resetUserNodeMap = React.useCallback(
+    (userNode: UserNode) => {
+      const userId = userNode.user.user_id
+      setIsLoading(true)
+      setUserNodeMap({
+        [userId]: userNode
+      })
+      setIsLoading(false)
+    },
+    [setUserNodeMap, setIsLoading]
+  )
+
   const resetUserNodeMapById = React.useCallback(
     (userId: string | number) => {
       setIsLoading(true)
@@ -90,6 +102,7 @@ function useViz() {
     addUserNode,
     removeUserNode,
     addUserById,
+    resetUserNodeMap,
     resetUserNodeMapById,
 
     simulation,

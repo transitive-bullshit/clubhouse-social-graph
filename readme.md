@@ -21,8 +21,8 @@ This webapp is built using [Next.js](https://nextjs.org) deployed to [Vercel](ht
   - [ ] social proof
   - [ ] footer
 - User page `/[username]`
-  - [ ] Basic user profile info
-  - [ ] Links to social
+  - [x] Basic user profile info
+  - [x] Links to social
   - [x] Followers viz
   - [x] Following viz
   - [x] Invite chain viz
@@ -31,7 +31,7 @@ This webapp is built using [Next.js](https://nextjs.org) deployed to [Vercel](ht
   - [ ] Adjust viz settings
   - [ ] Logout
 - Core visualization
-  - [ ] Navigate to user profiles
+  - [x] Navigate to user profiles
   - [ ] Navigate to user relationship viz
   - [x] Add fallback profile photo
 - [ ] About page `/about`
