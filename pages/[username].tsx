@@ -8,8 +8,11 @@ import {
   SocialGraphVisualization,
   VisualizationSelector,
   QueryParamProvider,
-  FocusedUserPane
+  FocusedUserPane,
+  ZoomControls,
+  InfoModal
 } from 'components'
+
 import { getFullUserByUsername } from 'lib/get-full-user-by-username'
 import { UserNode } from 'lib/types'
 import { Viz } from 'state/viz'
@@ -97,6 +100,10 @@ const SocialGraph = ({ userNode }: { userNode: UserNode }) => {
       <VisualizationSelector />
 
       <FocusedUserPane />
+
+      <ZoomControls />
+
+      <InfoModal />
     </section>
   )
 }
