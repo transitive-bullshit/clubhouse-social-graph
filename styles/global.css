@@ -58,6 +58,11 @@ h2 {
   position: relative !important;
 }
 
+.notion-block-3466bb074c674be299a5c946c8eed70e {
+  width: 150%;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+}
+
 @media (max-width: 700px) {
   .fixed-page header > div > a:first-of-type {
     visibility: hidden;

@@ -62,3 +62,11 @@
 .avatar:active {
   opacity: 0.9;
 }
+
+.link {
+  color: #000;
+}
+
+.link:hover {
+  color: #00afed;
+}

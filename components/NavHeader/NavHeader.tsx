@@ -19,7 +19,7 @@ import { User } from 'state/user'
 
 import styles from './styles.module.css'
 
-export const NavHeader: React.FC = () => {
+export const NavHeader: React.FC<{ full?: boolean }> = ({ full }) => {
   const router = useRouter()
   const {
     user,
@@ -53,6 +53,12 @@ export const NavHeader: React.FC = () => {
 
         {!isLoading && (
           <nav className={styles.nav}>
+            {full && (
+              <Link href='/about'>
+                <a className={styles.link}>About</a>
+              </Link>
+            )}
+
             {isLoggedIn ? (
               <Menu>
                 <MenuButton className={styles.avatar}>

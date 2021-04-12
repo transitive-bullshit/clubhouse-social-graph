@@ -20,7 +20,7 @@ export const Layout: React.FC<{
       <Head title={title} description={description} twitter={twitter} />
 
       <div className={cs(styles.body, full ? 'full-page' : 'fixed-page')}>
-        <NavHeader />
+        <NavHeader full={full} />
 
         <main className={styles.main}>{children}</main>
 

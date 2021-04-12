@@ -1,8 +1,5 @@
 import { NotionAPI } from 'notion-client'
 
-// core styles shared by all of react-notion-x (required)
-import 'react-notion-x/src/styles.css'
-
 import { NotionPage } from 'components/NotionPage/NotionPage'
 
 const notion = new NotionAPI()
