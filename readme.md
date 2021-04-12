@@ -19,7 +19,7 @@ This webapp is built using [Next.js](https://nextjs.org) deployed to [Vercel](ht
 - Home page `/`
   - [ ] content
   - [ ] social proof
-  - [ ] footer
+  - [x] footer
 - User page `/[username]`
   - [x] Basic user profile info
   - [x] Links to social
