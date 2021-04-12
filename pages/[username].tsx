@@ -66,13 +66,7 @@ export async function getStaticPaths() {
   }
 }
 
-export default function UserDetailPage({
-  username,
-  userNode
-}: {
-  username: string
-  userNode: UserNode
-}) {
+export default function UserDetailPage({ userNode }: { userNode: UserNode }) {
   return (
     <Layout>
       <QueryParamProvider>
