@@ -17,7 +17,8 @@ export const FocusedUserPane = () => {
     userNodeMap,
     addUserById,
     removeUserNode,
-    isLoading
+    isLoading,
+    setIsLoading
   } = Viz.useContainer()
   const router = useRouter()
 
@@ -36,8 +37,9 @@ export const FocusedUserPane = () => {
   }, [removeUserNode, user])
 
   const onClickViewGraph = React.useCallback(() => {
+    setIsLoading(true)
     router.push(`/${user.username}`)
-  }, [router, user])
+  }, [router, user, setIsLoading])
 
   return (
     <AnimatePresence>
