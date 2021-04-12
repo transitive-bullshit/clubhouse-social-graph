@@ -47,12 +47,22 @@ h2 {
 }
 
 .notion-viewport {
-  position: relative !important;
+  pointer-events: none;
 }
 
 .notion-block-3466bb074c674be299a5c946c8eed70e {
   width: 150%;
   box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.notion-asset-wrapper-image img {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.notion-asset-caption {
+  text-align: center;
 }
 
 .notion-list-disc {

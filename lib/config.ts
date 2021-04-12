@@ -26,6 +26,8 @@ export const sessionCookieName = getEnv(
   'clubhouse-social-graph'
 )
 
+export const imageCDNHost = 'https://ssfy.io'
+
 // ----------------------------------------------------------------------------
 
 export function getEnv(

@@ -3,8 +3,9 @@ import { ExtendedRecordMap } from 'notion-types'
 import { NotionRenderer } from 'react-notion-x'
 import { Tweet } from 'react-static-tweets'
 
-import { Layout } from 'components'
+import { mapNotionImageUrl } from 'lib/map-image-url'
 
+import { Layout } from '../Layout/Layout'
 import styles from './styles.module.css'
 
 export function NotionPage({ recordMap }: { recordMap: ExtendedRecordMap }) {
@@ -18,6 +19,7 @@ export function NotionPage({ recordMap }: { recordMap: ExtendedRecordMap }) {
           components={{
             tweet: Tweet
           }}
+          mapImageUrl={mapNotionImageUrl}
         />
       </section>
     </Layout>
