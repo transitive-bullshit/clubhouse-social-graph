@@ -122,7 +122,7 @@ export const NavFooter: React.FC = () => {
             <div className={styles.links}>
               {section.links.map((link) =>
                 link.href ? (
-                  <Link key={link.href} href={link.href}>
+                  <Link key={link.title} href={link.href}>
                     <a title={link.title} className={styles.link}>
                       {link.title}
                     </a>
@@ -130,7 +130,7 @@ export const NavFooter: React.FC = () => {
                 ) : (
                   <div
                     className={styles.link}
-                    key={link.href}
+                    key={link.title}
                     title={link.title}
                     onClick={link.onClick}
                   >
