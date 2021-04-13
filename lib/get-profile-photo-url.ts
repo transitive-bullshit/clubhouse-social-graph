@@ -21,7 +21,7 @@ export const getProfilePhotoUrl = (
     }
 
     url = `${imageProxyUrl}/${suffix}?w=${width}&auto=format&mask=corners`
-  } else if (user?.photo_url?.startsWith('/corgis/')) {
+  } else if (user?.photo_url?.startsWith('https://senpai.imgix.net')) {
     return user.photo_url
   }
 
