@@ -13,6 +13,7 @@ function useViz() {
     withDefault(StringParam, 'following')
   )
   const [isLoading, setIsLoading] = React.useState<boolean>(true)
+  const [isCorgiMode, setIsCorgiMode] = React.useState<boolean>(false)
   const [visualization, setVisualization] = React.useState<Visualization>(
     vizQuery as Visualization
   )
@@ -110,6 +111,9 @@ function useViz() {
 
     isLoading,
     setIsLoading,
+
+    isCorgiMode,
+    setIsCorgiMode,
 
     infoModal
   }

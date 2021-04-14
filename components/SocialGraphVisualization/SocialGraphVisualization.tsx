@@ -5,6 +5,7 @@ import { User } from 'lib/types'
 import { getApproxNumRepresentation } from 'lib/get-approx-num-representation'
 import { getProfilePhotoUrl } from 'lib/get-profile-photo-url'
 import { Viz } from 'state/viz'
+import { getRandomCorgi } from 'lib/get-random-corgi'
 
 import { LoadingIndicator } from '../LoadingIndicator/LoadingIndicator'
 import { fillRoundedRect } from './fill-rounded-rect'
@@ -30,8 +31,10 @@ export const SocialGraphVisualization: React.FC = () => {
     focusedUser,
     simulation,
     isLoading,
-    setIsLoading
+    setIsLoading,
+    isCorgiMode
   } = Viz.useContainer()
+  const corgiMap = React.useRef<{ [userId: string]: string }>({})
   const imageRefs = React.useRef<any>({})
   const [hoverNode, setHoverNode] = React.useState<number>(null)
   const [measureRef, { width, height }] = useMeasure()
@@ -286,9 +289,16 @@ export const SocialGraphVisualization: React.FC = () => {
       <div className={styles.images}>
         {graphData.nodes.map((node) => {
           const width = isHeroNode(node) ? imageSizeHero : imageSize
-          const url = getProfilePhotoUrl(node, {
-            width
-          })
+          let url: string
+
+          if (isCorgiMode) {
+            url = corgiMap.current[node.user_id]
+            if (!url) {
+              url = corgiMap.current[node.user_id] = getRandomCorgi()
+            }
+          } else {
+            url = getProfilePhotoUrl(node, { width })
+          }
 
           return (
             <img

@@ -2,7 +2,6 @@ import * as db from 'clubhouse-crawler'
 import * as neo4j from 'neo4j-driver'
 
 import { convertNeo4jUser } from 'lib/convert-neo4j-user'
-import { getRandomCorgi } from 'lib/get-random-corgi'
 
 export const getFullUserById = async (
   session: neo4j.Session,
@@ -37,25 +36,6 @@ export const getFullUserById = async (
   )
 
   const inviteChain = results[4].map((user) => convertNeo4jUser(user))
-
-  if (userId === 76 || userId === '76') {
-    // special surprise for li jin...
-    for (const u of followers) {
-      u.photo_url = getRandomCorgi()
-    }
-
-    for (const u of following) {
-      u.photo_url = getRandomCorgi()
-    }
-
-    for (const u of invitees) {
-      u.photo_url = getRandomCorgi()
-    }
-
-    for (const u of inviteChain) {
-      u.photo_url = getRandomCorgi()
-    }
-  }
 
   return {
     user,

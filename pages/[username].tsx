@@ -10,7 +10,8 @@ import {
   QueryParamProvider,
   FocusedUserPane,
   ZoomControls,
-  InfoModal
+  InfoModal,
+  CorgiModeControls
 } from 'components'
 
 import { getFullUserByUsername } from 'lib/get-full-user-by-username'
@@ -71,7 +72,13 @@ export async function getStaticPaths() {
   }
 }
 
-export default function UserDetailPage({ userNode }: { userNode: UserNode }) {
+export default function UserDetailPage({
+  userNode,
+  username
+}: {
+  userNode: UserNode
+  username: string
+}) {
   const name = userNode?.user?.name
   const bio = userNode?.user?.bio
   const title = name ? `${name} - Social Graph` : undefined
@@ -84,18 +91,28 @@ export default function UserDetailPage({ userNode }: { userNode: UserNode }) {
     <Layout title={title} description={description} twitter={twitter}>
       <QueryParamProvider>
         <Viz.Provider>
-          <SocialGraph userNode={userNode} />
+          <SocialGraph userNode={userNode} username={username} />
         </Viz.Provider>
       </QueryParamProvider>
     </Layout>
   )
 }
 
-const SocialGraph = ({ userNode }: { userNode: UserNode }) => {
-  const { resetUserNodeMap } = Viz.useContainer()
+const SocialGraph = ({
+  userNode,
+  username
+}: {
+  userNode: UserNode
+  username: string
+}) => {
+  const { resetUserNodeMap, setIsCorgiMode } = Viz.useContainer()
 
   React.useEffect(() => {
     if (!userNode) return
+
+    if (username === 'li') {
+      setIsCorgiMode(true)
+    }
 
     resetUserNodeMap(userNode)
   }, [userNode, resetUserNodeMap])
@@ -111,6 +128,8 @@ const SocialGraph = ({ userNode }: { userNode: UserNode }) => {
       <ZoomControls />
 
       <InfoModal />
+
+      {username === 'li' && <CorgiModeControls />}
     </section>
   )
 }
