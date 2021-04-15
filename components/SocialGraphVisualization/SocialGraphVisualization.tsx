@@ -122,21 +122,21 @@ export const SocialGraphVisualization: React.FC = () => {
   }, [visualization, userNodeMap, setGraphData])
 
   // initial graph layout
-  React.useEffect(() => {
-    if (numUsers !== 1) {
-      return
-    }
+  // React.useEffect(() => {
+  //   if (numUsers !== 1) {
+  //     return
+  //   }
 
-    setIsLoading(true)
-    setTimeout(() => {
-      simulation.current?.zoomToFit(250)
+  //   setIsLoading(true)
+  //   setTimeout(() => {
+  //     simulation.current?.zoomToFit(250)
 
-      setTimeout(() => {
-        simulation.current?.zoomToFit(100)
-        setIsLoading(false)
-      }, 250)
-    }, 1000)
-  }, [userNodeMap, setIsLoading])
+  //     setTimeout(() => {
+  //       simulation.current?.zoomToFit(100)
+  //       setIsLoading(false)
+  //     }, 250)
+  //   }, 1000)
+  // }, [userNodeMap, setIsLoading])
 
   React.useEffect(() => {
     if (numUsers < 1) {
@@ -290,7 +290,7 @@ export const SocialGraphVisualization: React.FC = () => {
         />
 
         <LoadingIndicator
-          isLoading={isLoading || Object.keys(pendingUserNodes).length}
+          isLoading={isLoading || Object.keys(pendingUserNodes).length > 0}
           initial={{ opacity: numUsers ? 0 : 1 }}
         />
       </div>

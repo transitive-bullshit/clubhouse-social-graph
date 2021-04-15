@@ -54,10 +54,9 @@ function useViz() {
         [userId]: userNode
       }))
 
-      setPendingUserNodes((pendingUserNodes) => {
-        delete pendingUserNodes[userNode.user.username]
-        return pendingUserNodes
-      })
+      setPendingUserNodes((pendingUserNodes) =>
+        omit(pendingUserNodes, userNode.user.username)
+      )
     },
     [setUserNodeMap, setPendingUserNodes]
   )
@@ -65,11 +64,10 @@ function useViz() {
   const removeUserNode = React.useCallback(
     (userId: string | number) => {
       setUserNodeMap((userNodeMap) => {
-        console.log('remove', userId, pendingUserNodes, userNodeMap)
         return omit(userNodeMap, userId)
       })
     },
-    [pendingUserNodes, setUserNodeMap]
+    [setUserNodeMap]
   )
 
   const addUserById = React.useCallback(
@@ -137,19 +135,20 @@ function useViz() {
 
   // sync userNodeMap => connectQuery
   React.useEffect(() => {
-    const values = Array.from(
+    const usernames = Array.from(
       new Set(
         Object.values(userNodeMap)
           .map((userNode) => userNode.user.username)
           .concat(Object.keys(pendingUserNodes))
       )
-    ).sort()
-    const usernames = values.filter((username) => username !== rootUsername)
+    )
+      .filter((username) => username !== rootUsername)
+      .sort()
 
     setConnectQuery(usernames.length ? usernames : undefined)
   }, [rootUsername, userNodeMap, pendingUserNodes, setConnectQuery])
 
-  // sync connectQuery => userNodeMap
+  // initialize any pending user nodes and start loading them
   React.useEffect(() => {
     for (const username of Object.keys(pendingUserNodes)) {
       if (!pendingUserNodes[username]) {
@@ -164,16 +163,23 @@ function useViz() {
 
   React.useEffect(() => {
     const numKeys = Object.keys(pendingUserNodes).length
-    if (!numKeys) {
-      console.log('no keys 0 zoom')
-      simulation.current?.zoomToFit(250)
+    const numUsers = Object.keys(userNodeMap).length
 
+    if (!numKeys && numUsers > 0) {
+      simulation.current?.zoomToFit(500)
+      setIsLoading(true)
       setTimeout(() => {
-        console.log('no keys 1 zoom')
-        simulation.current?.zoomToFit(100)
-      }, 250)
+        simulation.current?.zoomToFit(250)
+
+        setTimeout(() => {
+          simulation.current?.zoomToFit(100)
+          setIsLoading(false)
+        }, 250)
+      }, 1000)
+    } else {
+      console.log('keys', numKeys, pendingUserNodes)
     }
-  }, [pendingUserNodes])
+  }, [userNodeMap, pendingUserNodes, setIsLoading])
 
   return {
     visualization,
