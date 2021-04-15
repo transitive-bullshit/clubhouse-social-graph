@@ -166,16 +166,13 @@ function useViz() {
     const numUsers = Object.keys(userNodeMap).length
 
     if (!numKeys && numUsers > 0) {
-      simulation.current?.zoomToFit(500)
       setIsLoading(true)
-      setTimeout(() => {
-        simulation.current?.zoomToFit(250)
+      simulation.current?.zoomToFit(250)
 
-        setTimeout(() => {
-          simulation.current?.zoomToFit(100)
-          setIsLoading(false)
-        }, 250)
-      }, 1000)
+      setTimeout(() => {
+        simulation.current?.zoomToFit(100)
+        setIsLoading(false)
+      }, 250)
     } else {
       console.log('keys', numKeys, pendingUserNodes)
     }
