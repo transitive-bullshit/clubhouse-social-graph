@@ -30,14 +30,21 @@ export const SocialGraphVisualization: React.FC = () => {
     setFocusedUser,
     focusedUser,
     simulation,
-    isLoading,
-    setIsLoading,
+    loading,
+    incLoading,
+    decLoading,
+    pendingUserNodes,
     isCorgiMode
   } = Viz.useContainer()
   const corgiMap = React.useRef<{ [userId: string]: string }>({})
   const imageRefs = React.useRef<any>({})
   const [hoverNode, setHoverNode] = React.useState<number>(null)
-  const [measureRef, { width, height }] = useMeasure()
+  const defaultWidth = typeof window !== 'undefined' ? window.innerWidth : 1280
+  const defaultHeight = typeof window !== 'undefined' ? window.innerHeight : 720
+  const [
+    measureRef,
+    { width = defaultWidth, height = defaultHeight }
+  ] = useMeasure()
   const [graphData, setGraphData] = React.useState<GraphData>({
     nodes: [],
     links: []
@@ -126,28 +133,30 @@ export const SocialGraphVisualization: React.FC = () => {
       return
     }
 
-    setIsLoading(true)
+    incLoading()
     setTimeout(() => {
       simulation.current?.zoomToFit(250)
 
       setTimeout(() => {
         simulation.current?.zoomToFit(100)
-        setIsLoading(false)
+        decLoading()
       }, 250)
     }, 1000)
-  }, [userNodeMap, setIsLoading])
+  }, [userNodeMap, incLoading, decLoading])
 
   React.useEffect(() => {
     if (numUsers < 1) {
       return
     }
 
-    setIsLoading(true)
+    incLoading()
     setTimeout(() => {
       simulation.current?.zoomToFit(250)
-      setIsLoading(false)
+      setTimeout(() => {
+        decLoading()
+      }, 250)
     }, 250)
-  }, [visualization])
+  }, [visualization, incLoading, decLoading])
 
   const onNodeClick = React.useCallback(
     (node, event) => {
@@ -164,7 +173,14 @@ export const SocialGraphVisualization: React.FC = () => {
         addUserById(node.user_id)
       }
     },
-    [userNodeMap, focusedUser, addUserById]
+    [userNodeMap, focusedUser, addUserById, setFocusedUser]
+  )
+
+  const onNodeDrag = React.useCallback(
+    (node) => {
+      setFocusedUser(node)
+    },
+    [setFocusedUser]
   )
 
   const onBackgroundClick = React.useCallback(() => {
@@ -273,6 +289,7 @@ export const SocialGraphVisualization: React.FC = () => {
           nodeId='user_id'
           onBackgroundClick={onBackgroundClick}
           onNodeClick={onNodeClick}
+          onNodeDrag={onNodeDrag}
           onNodeHover={onNodeHover}
           onNodeRightClick={onNodeRightClick}
           nodeCanvasObject={drawNode}
@@ -281,7 +298,7 @@ export const SocialGraphVisualization: React.FC = () => {
         />
 
         <LoadingIndicator
-          isLoading={isLoading}
+          isLoading={loading > 0 || Object.keys(pendingUserNodes).length > 0}
           initial={{ opacity: numUsers ? 0 : 1 }}
         />
       </div>
