@@ -1,27 +1,47 @@
 import React from 'react'
+import { useRouter } from 'next/router'
 import { createContainer } from 'unstated-next'
 import { useDisclosure } from '@chakra-ui/react'
-import { useQueryParam, StringParam, withDefault } from 'use-query-params'
+import {
+  useQueryParam,
+  StringParam,
+  ArrayParam,
+  withDefault
+} from 'use-query-params'
 import omit from 'lodash.omit'
 
 import { User, UserNode, UserNodeMap, Visualization } from 'lib/types'
 import { fetchClubhouseAPI } from 'lib/fetch-clubhouse-api'
 
 function useViz() {
+  const router = useRouter()
   const [vizQuery, setVizQuery] = useQueryParam<string>(
     'viz',
     withDefault(StringParam, 'following')
+  )
+  const [connectQuery, setConnectQuery] = useQueryParam<string[]>(
+    'u',
+    withDefault(ArrayParam, undefined)
   )
   const [isLoading, setIsLoading] = React.useState<boolean>(true)
   const [isCorgiMode, setIsCorgiMode] = React.useState<boolean>(false)
   const [visualization, setVisualization] = React.useState<Visualization>(
     vizQuery as Visualization
   )
+  const [rootUsername, setRootUsername] = React.useState<string>(
+    router.query.username as string
+  )
   const [userNodeMap, setUserNodeMap] = React.useState<UserNodeMap>({})
+  const [pendingUserNodes, setPendingUserNodes] = React.useState<{
+    [username: string]: boolean
+  }>(
+    connectQuery?.reduce(
+      (acc, username) => ({ ...acc, [username]: false }),
+      {}
+    ) ?? {}
+  )
   const [focusedUser, setFocusedUser] = React.useState<User>(null)
   const simulation = React.useRef<any>()
-
-  // TODO
   const infoModal = useDisclosure()
 
   const addUserNode = React.useCallback(
@@ -33,15 +53,23 @@ function useViz() {
         ...userNodeMap,
         [userId]: userNode
       }))
+
+      setPendingUserNodes((pendingUserNodes) => {
+        delete pendingUserNodes[userNode.user.username]
+        return pendingUserNodes
+      })
     },
-    [setUserNodeMap]
+    [setUserNodeMap, setPendingUserNodes]
   )
 
   const removeUserNode = React.useCallback(
     (userId: string | number) => {
-      setUserNodeMap((userNodeMap) => omit(userNodeMap, userId))
+      setUserNodeMap((userNodeMap) => {
+        console.log('remove', userId, pendingUserNodes, userNodeMap)
+        return omit(userNodeMap, userId)
+      })
     },
-    [setUserNodeMap]
+    [pendingUserNodes, setUserNodeMap]
   )
 
   const addUserById = React.useCallback(
@@ -89,9 +117,63 @@ function useViz() {
     })
   }
 
+  function fetchAndUpsertUserByUsername(username: string) {
+    return fetchClubhouseAPI({
+      endpoint: `/db/users/username/${username}`
+    }).then((res) => {
+      if (!res.error) {
+        addUserNode(res)
+      }
+    })
+  }
+
   React.useEffect(() => {
     setVizQuery(visualization === 'following' ? undefined : visualization)
   }, [visualization, setVizQuery])
+
+  React.useEffect(() => {
+    setRootUsername(router.query.username as string)
+  }, [router.query.username])
+
+  // sync userNodeMap => connectQuery
+  React.useEffect(() => {
+    const values = Array.from(
+      new Set(
+        Object.values(userNodeMap)
+          .map((userNode) => userNode.user.username)
+          .concat(Object.keys(pendingUserNodes))
+      )
+    ).sort()
+    const usernames = values.filter((username) => username !== rootUsername)
+
+    setConnectQuery(usernames.length ? usernames : undefined)
+  }, [rootUsername, userNodeMap, pendingUserNodes, setConnectQuery])
+
+  // sync connectQuery => userNodeMap
+  React.useEffect(() => {
+    for (const username of Object.keys(pendingUserNodes)) {
+      if (!pendingUserNodes[username]) {
+        setPendingUserNodes((pendingUserNodes) => {
+          pendingUserNodes[username] = true
+          return pendingUserNodes
+        })
+        fetchAndUpsertUserByUsername(username)
+      }
+    }
+  }, [pendingUserNodes, addUserNode, setPendingUserNodes])
+
+  React.useEffect(() => {
+    const numKeys = Object.keys(pendingUserNodes).length
+    if (!numKeys) {
+      console.log('no keys 0 zoom')
+      simulation.current?.zoomToFit(250)
+
+      setTimeout(() => {
+        console.log('no keys 1 zoom')
+        simulation.current?.zoomToFit(100)
+      }, 250)
+    }
+  }, [pendingUserNodes])
 
   return {
     visualization,
@@ -111,6 +193,7 @@ function useViz() {
 
     isLoading,
     setIsLoading,
+    pendingUserNodes,
 
     isCorgiMode,
     setIsCorgiMode,
