@@ -105,7 +105,7 @@ export const LoginModal: React.FC<{
       <Modal initialFocusRef={initialRef} isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Sign in to Clubhouse</ModalHeader>
+          <ModalHeader>Log in to Clubhouse</ModalHeader>
 
           <ModalCloseButton />
 

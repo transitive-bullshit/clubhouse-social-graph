@@ -1,6 +1,5 @@
 import React from 'react'
 import Link from 'next/link'
-import Linkify from 'react-linkify'
 
 import * as db from 'clubhouse-crawler'
 import * as neo4j from 'neo4j-driver'
@@ -9,7 +8,7 @@ import { Button } from '@chakra-ui/react'
 import { FaTwitter, FaInstagram } from 'react-icons/fa'
 import { HiOutlineExternalLink } from 'react-icons/hi'
 
-import { Layout } from 'components'
+import { Layout, UserBio } from 'components'
 
 import { User } from 'lib/types'
 import { convertNeo4jUser } from 'lib/convert-neo4j-user'
@@ -19,16 +18,6 @@ import { Avatar } from 'components/Avatar/Avatar'
 import { Paper } from 'components/Paper/Paper'
 
 import styles from 'styles/top-users.module.css'
-
-const decorateLink = (
-  decoratedHref: string,
-  decoratedText: string,
-  key: number
-) => (
-  <a key={key} href={decoratedHref} target='_blank' rel='noopener noreferrer'>
-    {decoratedText}
-  </a>
-)
 
 export const getStaticProps = async () => {
   try {
@@ -125,11 +114,7 @@ export default function TopUsersPage({ users }: { users: User[] }) {
                   </Link>
                 </div>
 
-                <p className={styles.bio}>
-                  <Linkify componentDecorator={decorateLink}>
-                    {user.bio}
-                  </Linkify>
-                </p>
+                <UserBio user={user} className={styles.bio} />
 
                 <div className={styles.actions}>
                   <Link href={profileUrl}>

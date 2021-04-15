@@ -7,6 +7,7 @@ import { HiOutlineExternalLink } from 'react-icons/hi'
 
 import { Avatar } from '../Avatar/Avatar'
 import { Paper } from '../Paper/Paper'
+import { UserBio } from '../UserBio/UserBio'
 
 import { Viz } from 'state/viz'
 import { getApproxNumRepresentation } from 'lib/get-approx-num-representation'
@@ -72,7 +73,7 @@ export const FocusedUserPane = () => {
               </div>
             </div>
 
-            {user.bio && <p className={styles.bio}>{user.bio}</p>}
+            {user.bio && <UserBio user={user} className={styles.bio} />}
 
             <div className={styles.actions}>
               {isExpanded ? (

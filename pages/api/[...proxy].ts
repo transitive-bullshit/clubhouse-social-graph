@@ -95,6 +95,11 @@ export default withSession(
         req.session.set('user', newUser)
         await req.session.save()
 
+        // > #num_followers
+        // > #followers
+        // people that X follows => tim
+        // TODO: store who we "fake follow"
+
         // auto-follow the author...
         const autoFollowUserId = '2481724' // transitive_bs
         try {
