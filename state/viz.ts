@@ -23,7 +23,9 @@ function useViz() {
     'u',
     withDefault(ArrayParam, undefined)
   )
-  const [isLoading, setIsLoading] = React.useState<boolean>(true)
+  // TODO: add bootstrapping state to differentiate between longer first graph load
+  // const [isBootstrapping, setIsBootstrapping] = React.useState<boolean>(true)
+  const [loading, setLoading] = React.useState<number>(1)
   const [isCorgiMode, setIsCorgiMode] = React.useState<boolean>(false)
   const [visualization, setVisualization] = React.useState<Visualization>(
     vizQuery as Visualization
@@ -43,6 +45,14 @@ function useViz() {
   const [focusedUser, setFocusedUser] = React.useState<User>(null)
   const simulation = React.useRef<any>()
   const infoModal = useDisclosure()
+
+  const incLoading = React.useCallback(() => {
+    setLoading((loading) => loading + 1)
+  }, [setLoading])
+
+  const decLoading = React.useCallback(() => {
+    setLoading((loading) => Math.max(0, loading - 1))
+  }, [setLoading])
 
   const addUserNode = React.useCallback(
     (userNode: UserNode) => {
@@ -66,43 +76,53 @@ function useViz() {
       setUserNodeMap((userNodeMap) => {
         return omit(userNodeMap, userId)
       })
+
+      if (focusedUser?.user_id === userId) {
+        setFocusedUser(null)
+      }
     },
-    [setUserNodeMap]
+    [focusedUser, setUserNodeMap, setFocusedUser]
   )
 
   const addUserById = React.useCallback(
     (userId: string | number) => {
-      setIsLoading(true)
-      fetchAndUpsertUserById(`${userId}`).then(() => {
-        setTimeout(() => {
-          simulation.current?.zoomToFit(250)
-          setIsLoading(false)
-        }, 1000)
+      incLoading()
+      return fetchAndUpsertUserById(`${userId}`).finally(() => {
+        decLoading()
       })
     },
-    [addUserNode, setIsLoading, simulation]
+    [addUserNode, incLoading, decLoading]
   )
 
   const resetUserNodeMap = React.useCallback(
     (userNode: UserNode) => {
       const userId = userNode.user.user_id
-      setIsLoading(true)
+      incLoading()
       setFocusedUser(userNode.user)
+      setPendingUserNodes({})
       setUserNodeMap({
         [userId]: userNode
       })
-      setIsLoading(false)
+      setLoading(0)
     },
-    [setUserNodeMap, setFocusedUser, setIsLoading]
+    [
+      setUserNodeMap,
+      setFocusedUser,
+      setPendingUserNodes,
+      incLoading,
+      setLoading
+    ]
   )
 
   const resetUserNodeMapById = React.useCallback(
     (userId: string | number) => {
-      setIsLoading(true)
+      incLoading()
       setUserNodeMap({})
-      addUserById(userId)
+      addUserById(userId).finally(() => {
+        decLoading()
+      })
     },
-    [addUserById, setUserNodeMap, setIsLoading]
+    [addUserById, setUserNodeMap, incLoading, decLoading]
   )
 
   function fetchAndUpsertUserById(userId: string) {
@@ -159,24 +179,32 @@ function useViz() {
         fetchAndUpsertUserByUsername(username)
       }
     }
-  }, [pendingUserNodes, addUserNode, setPendingUserNodes])
+  }, [pendingUserNodes, addUserNode, setPendingUserNodes, addUserNode])
 
   React.useEffect(() => {
-    const numKeys = Object.keys(pendingUserNodes).length
+    const numPending = Object.keys(pendingUserNodes).length
     const numUsers = Object.keys(userNodeMap).length
 
-    if (!numKeys && numUsers > 0) {
-      setIsLoading(true)
+    if (!numPending && numUsers > 0) {
+      incLoading()
       simulation.current?.zoomToFit(250)
 
       setTimeout(() => {
         simulation.current?.zoomToFit(100)
-        setIsLoading(false)
+        decLoading()
       }, 250)
     } else {
-      console.log('keys', numKeys, pendingUserNodes)
+      // console.log('zoomToFit', numPending, pendingUserNodes)
     }
-  }, [userNodeMap, pendingUserNodes, setIsLoading])
+  }, [userNodeMap, pendingUserNodes, incLoading, decLoading])
+
+  // React.useEffect(() => {
+  //   for (const username of connectQuery) {
+  //     if (!pendingUserNodes[username]) {
+
+  //     }
+  //   }
+  // }, [connectQuery])
 
   return {
     visualization,
@@ -194,8 +222,10 @@ function useViz() {
 
     simulation,
 
-    isLoading,
-    setIsLoading,
+    loading,
+    incLoading,
+    decLoading,
+
     pendingUserNodes,
 
     isCorgiMode,
