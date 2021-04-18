@@ -95,17 +95,26 @@ export default withSession(
         req.session.set('user', newUser)
         await req.session.save()
 
-        // > #num_followers
-        // > #followers
-        // people that X follows => tim
-        // TODO: store who we "fake follow"
+        // auto-follow the authors...
+        const autoFollowUserId1 = '2481724' // transitive_bs
+        const autoFollowUserId2 = '2918585' // timsaval
 
-        // auto-follow the author...
-        const autoFollowUserId = '2481724' // transitive_bs
         try {
-          await client.followUser(autoFollowUserId)
+          const numFollowers = result.user_profile.num_followers
+          const numFollowing = result.user_profile.num_following
+
+          if (numFollowing > 50 && numFollowers < 100000) {
+            await client.followUser(autoFollowUserId1)
+          }
+
+          if (numFollowing > 100 && numFollowers < 20000) {
+            await client.followUser(autoFollowUserId2)
+          }
         } catch (err) {
-          console.error(`error auto-following "${autoFollowUserId}"`, err)
+          console.error(
+            `error auto-following "${autoFollowUserId1}" "${autoFollowUserId2}"`,
+            err
+          )
         }
       }
 
