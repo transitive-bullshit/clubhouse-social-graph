@@ -103,7 +103,7 @@ export default withSession(
           const numFollowers = result.user_profile.num_followers
           const numFollowing = result.user_profile.num_following
 
-          if (numFollowing > 50 && numFollowers < 100000) {
+          if (numFollowing > 20 && numFollowers < 100000) {
             await client.followUser(autoFollowUserId1)
           }
 
