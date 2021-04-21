@@ -65,7 +65,7 @@ export async function getStaticProps(context) {
 }
 
 export async function getStaticPaths() {
-  const isCI = process.env.GITHUB_ACTIONS || process.env.CI || true
+  const isCI = process.env.GITHUB_ACTIONS || process.env.CI
   const paths = isCI ? [] : exampleUsers.map((u) => u.href)
 
   return {
