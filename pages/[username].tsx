@@ -49,10 +49,14 @@ export async function getStaticProps(context) {
         props.userNode = userNode
         console.log(props.userNode.user)
       } finally {
-        await session.close()
+        if (session) {
+          await session.close()
+        }
       }
     } finally {
-      await driver.close()
+      if (driver) {
+        await driver.close()
+      }
     }
 
     // revalidate once every hour

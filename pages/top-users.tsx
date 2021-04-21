@@ -54,10 +54,14 @@ export const getStaticProps = async () => {
           } as any
         ])
       } finally {
-        await session.close()
+        if (session) {
+          await session.close()
+        }
       }
     } finally {
-      await driver.close()
+      if (driver) {
+        await driver.close()
+      }
     }
 
     // revalidate once every hour
