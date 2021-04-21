@@ -142,7 +142,7 @@ export const SocialGraphVisualization: React.FC = () => {
         decLoading()
       }, 250)
     }, 1000)
-  }, [userNodeMap, incLoading, decLoading])
+  }, [userNodeMap, incLoading, decLoading, numUsers, simulation])
 
   React.useEffect(() => {
     if (numUsers < 1) {
@@ -156,7 +156,7 @@ export const SocialGraphVisualization: React.FC = () => {
         decLoading()
       }, 250)
     }, 250)
-  }, [visualization, incLoading, decLoading])
+  }, [visualization, incLoading, decLoading, numUsers, simulation])
 
   const onNodeClick = React.useCallback(
     (node, event) => {
@@ -221,9 +221,12 @@ export const SocialGraphVisualization: React.FC = () => {
     `
   }, [])
 
-  function isHeroNode(node) {
-    return !!userNodeMap[node.user_id]
-  }
+  const isHeroNode = React.useCallback(
+    (node) => {
+      return !!userNodeMap[node.user_id]
+    },
+    [userNodeMap]
+  )
 
   const drawNode = React.useCallback(
     (node, ctx: CanvasRenderingContext2D) => {
@@ -255,7 +258,7 @@ export const SocialGraphVisualization: React.FC = () => {
         // error with image
       }
     },
-    [hoverNode, userNodeMap]
+    [hoverNode, isHeroNode]
   )
 
   const wrapperStyle = React.useMemo(

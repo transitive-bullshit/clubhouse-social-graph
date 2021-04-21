@@ -35,8 +35,7 @@ export const QueryParamProviderComponent = (props: {
           { shallow: true }
         )
     }),
-    [pathname, router.pathname, router.query, location.pathname]
-    // [pathname, router]
+    [pathname, router]
   )
 
   return (

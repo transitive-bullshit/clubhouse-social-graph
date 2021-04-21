@@ -84,6 +84,32 @@ function useViz() {
     [focusedUser, setUserNodeMap, setFocusedUser]
   )
 
+  const fetchAndUpsertUserById = React.useCallback(
+    (userId: string) => {
+      return fetchClubhouseAPI({
+        endpoint: `/db/users/${userId}`
+      }).then((res) => {
+        if (!res.error) {
+          addUserNode(res)
+        }
+      })
+    },
+    [addUserNode]
+  )
+
+  const fetchAndUpsertUserByUsername = React.useCallback(
+    (username: string) => {
+      return fetchClubhouseAPI({
+        endpoint: `/db/users/username/${username}`
+      }).then((res) => {
+        if (!res.error) {
+          addUserNode(res)
+        }
+      })
+    },
+    [addUserNode]
+  )
+
   const addUserById = React.useCallback(
     (userId: string | number) => {
       incLoading()
@@ -91,7 +117,7 @@ function useViz() {
         decLoading()
       })
     },
-    [addUserNode, incLoading, decLoading]
+    [incLoading, decLoading, fetchAndUpsertUserById]
   )
 
   const resetUserNodeMap = React.useCallback(
@@ -124,26 +150,6 @@ function useViz() {
     },
     [addUserById, setUserNodeMap, incLoading, decLoading]
   )
-
-  function fetchAndUpsertUserById(userId: string) {
-    return fetchClubhouseAPI({
-      endpoint: `/db/users/${userId}`
-    }).then((res) => {
-      if (!res.error) {
-        addUserNode(res)
-      }
-    })
-  }
-
-  function fetchAndUpsertUserByUsername(username: string) {
-    return fetchClubhouseAPI({
-      endpoint: `/db/users/username/${username}`
-    }).then((res) => {
-      if (!res.error) {
-        addUserNode(res)
-      }
-    })
-  }
 
   React.useEffect(() => {
     setVizQuery(visualization === 'following' ? undefined : visualization)
@@ -179,7 +185,12 @@ function useViz() {
         fetchAndUpsertUserByUsername(username)
       }
     }
-  }, [pendingUserNodes, addUserNode, setPendingUserNodes, addUserNode])
+  }, [
+    pendingUserNodes,
+    setPendingUserNodes,
+    addUserNode,
+    fetchAndUpsertUserByUsername
+  ])
 
   React.useEffect(() => {
     const numPending = Object.keys(pendingUserNodes).length

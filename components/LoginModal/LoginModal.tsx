@@ -98,7 +98,7 @@ export const LoginModal: React.FC<{
     } else {
       setError(res.error)
     }
-  }, [phoneNumber, verificationCode])
+  }, [phoneNumber, verificationCode, router, onClose, setError, updateUser])
 
   return (
     <>

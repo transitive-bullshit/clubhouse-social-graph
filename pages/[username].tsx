@@ -115,7 +115,7 @@ const SocialGraph = ({
     }
 
     resetUserNodeMap(userNode)
-  }, [userNode, resetUserNodeMap])
+  }, [username, userNode, resetUserNodeMap, setIsCorgiMode])
 
   return (
     <section className={styles.fullPage}>
