@@ -24,6 +24,8 @@ export const Head: React.FC<{
 
       <meta name='twitter:title' content={title} />
       <meta property='og:title' content={title} />
+
+      <meta name='twitter:site' content={'@transitive_bs'} />
       <meta property='og:site_name' content={siteName} />
 
       <meta property='twitter:domain' content={domain} />
