@@ -35,8 +35,10 @@ export const Head: React.FC<{
 
       {socialImage ? (
         <>
-          {socialImage === defaultSocialImage && (
+          {socialImage === defaultSocialImage ? (
             <meta name='twitter:card' content='summary_large_image' />
+          ) : (
+            <meta name='twitter:card' content='summary' />
           )}
           <meta name='twitter:image' content={socialImage} />
           <meta property='og:image' content={socialImage} />
