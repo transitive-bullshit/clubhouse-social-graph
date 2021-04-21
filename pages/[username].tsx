@@ -17,6 +17,7 @@ import {
 } from 'components'
 
 import { getFullUserByUsername } from 'lib/get-full-user-by-username'
+import { getProfilePhotoUrl } from 'lib/get-profile-photo-url'
 import { UserNode } from 'lib/types'
 import exampleUsers from 'lib/example-users'
 import { Viz } from 'state/viz'
@@ -88,6 +89,7 @@ export default function UserDetailPage({
   const router = useRouter()
   const name = userNode?.user?.name
   const bio = userNode?.user?.bio
+  const socialImage = getProfilePhotoUrl(userNode?.user)
   const title = name ? `${name} - Social Graph` : undefined
   const description = name
     ? `Visualize the Clubhouse social graph of ${name}.${bio ? ' ' + bio : ''}`
@@ -95,7 +97,12 @@ export default function UserDetailPage({
   const twitter = userNode?.user?.twitter ?? 'transitive_bs'
 
   return (
-    <Layout title={title} description={description} twitter={twitter}>
+    <Layout
+      title={title}
+      description={description}
+      twitter={twitter}
+      socialImage={socialImage}
+    >
       {router.isFallback ? (
         <LoadingIndicator isLoading={true} initial={{ opacity: 1 }} />
       ) : (

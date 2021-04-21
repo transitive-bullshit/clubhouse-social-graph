@@ -14,10 +14,16 @@ export const Layout: React.FC<{
   title?: string
   description?: string
   twitter?: string
-}> = ({ children, title, description, twitter, full = false }) => {
+  socialImage?: string
+}> = ({ children, title, description, twitter, socialImage, full = false }) => {
   return (
     <User.Provider>
-      <Head title={title} description={description} twitter={twitter} />
+      <Head
+        title={title}
+        description={description}
+        twitter={twitter}
+        socialImage={socialImage}
+      />
 
       <div className={cs(styles.body, full ? 'full-page' : 'fixed-page')}>
         <NavHeader full={full} />
