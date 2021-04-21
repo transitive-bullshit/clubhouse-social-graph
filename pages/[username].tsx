@@ -92,7 +92,7 @@ export default function UserDetailPage({
   const socialImage = getProfilePhotoUrl(userNode?.user, { mask: null })
   const title = name ? `${name} - Social Graph` : undefined
   const description = name
-    ? `Visualize the Clubhouse social graph of ${name}.${bio ? ' ' + bio : ''}`
+    ? `The Clubhouse social graph of ${name}.${bio ? ' ' + bio : ''}`
     : undefined
   const twitter = userNode?.user?.twitter ?? 'transitive_bs'
 
