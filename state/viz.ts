@@ -140,6 +140,10 @@ function useViz() {
     ]
   )
 
+  // React.useEffect(() => {
+  //   console.log('loading', loading)
+  // }, [loading])
+
   const resetUserNodeMapById = React.useCallback(
     (userId: string | number) => {
       incLoading()

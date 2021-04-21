@@ -92,8 +92,6 @@ export const SocialGraphVisualization: React.FC = () => {
           addRelationship(userId, u.user_id)
         }
       } else if (visualization === 'invites') {
-        console.log(userNode)
-
         let prevUserId = userId
         for (const u of userNode.inviteChain) {
           users[u.user_id] = u

@@ -1,4 +1,5 @@
 import React from 'react'
+import { useRouter } from 'next/router'
 
 import * as db from 'clubhouse-crawler'
 import * as neo4j from 'neo4j-driver'
@@ -10,6 +11,7 @@ import {
   QueryParamProvider,
   FocusedUserPane,
   ZoomControls,
+  LoadingIndicator,
   InfoModal,
   CorgiModeControls
 } from 'components'
@@ -21,7 +23,7 @@ import { Viz } from 'state/viz'
 
 import styles from 'styles/user.module.css'
 
-export const getStaticProps = async (context) => {
+export async function getStaticProps(context) {
   const username = context.params.username as string
 
   try {
@@ -63,7 +65,7 @@ export const getStaticProps = async (context) => {
 }
 
 export async function getStaticPaths() {
-  const isCI = process.env.GITHUB_ACTIONS || process.env.CI
+  const isCI = process.env.GITHUB_ACTIONS || process.env.CI || true
   const paths = isCI ? [] : exampleUsers.map((u) => u.href)
 
   return {
@@ -79,6 +81,7 @@ export default function UserDetailPage({
   userNode: UserNode
   username: string
 }) {
+  const router = useRouter()
   const name = userNode?.user?.name
   const bio = userNode?.user?.bio
   const title = name ? `${name} - Social Graph` : undefined
@@ -89,11 +92,15 @@ export default function UserDetailPage({
 
   return (
     <Layout title={title} description={description} twitter={twitter}>
-      <QueryParamProvider>
-        <Viz.Provider>
-          <SocialGraph userNode={userNode} username={username} />
-        </Viz.Provider>
-      </QueryParamProvider>
+      {router.isFallback ? (
+        <LoadingIndicator isLoading={true} initial={{ opacity: 1 }} />
+      ) : (
+        <QueryParamProvider>
+          <Viz.Provider>
+            <SocialGraph userNode={userNode} username={username} />
+          </Viz.Provider>
+        </QueryParamProvider>
+      )}
     </Layout>
   )
 }
