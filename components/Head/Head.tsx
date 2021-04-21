@@ -42,6 +42,7 @@ export const Head: React.FC<{
           ) : (
             <meta name='twitter:card' content='summary' />
           )}
+
           <meta name='twitter:image' content={socialImage} />
           <meta property='og:image' content={socialImage} />
         </>

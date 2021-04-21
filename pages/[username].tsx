@@ -89,7 +89,7 @@ export default function UserDetailPage({
   const router = useRouter()
   const name = userNode?.user?.name
   const bio = userNode?.user?.bio
-  const socialImage = getProfilePhotoUrl(userNode?.user)
+  const socialImage = getProfilePhotoUrl(userNode?.user, { mask: null })
   const title = name ? `${name} - Social Graph` : undefined
   const description = name
     ? `Visualize the Clubhouse social graph of ${name}.${bio ? ' ' + bio : ''}`

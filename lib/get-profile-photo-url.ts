@@ -6,9 +6,11 @@ const defaultProfileImageUrl = '/profile.png'
 export const getProfilePhotoUrl = (
   user: User,
   {
-    width = 512
+    width = 512,
+    mask = 'corners'
   }: {
     width?: number
+    mask?: string
   } = {}
 ) => {
   let url = defaultProfileImageUrl
@@ -20,7 +22,9 @@ export const getProfilePhotoUrl = (
       suffix = suffix.substring(0, suffix.length - thumbnail.length)
     }
 
-    url = `${imageProxyUrl}/${suffix}?w=${width}&auto=format&mask=corners`
+    url = `${imageProxyUrl}/${suffix}?w=${width}&auto=format${
+      mask ? `&mask=${mask}` : ''
+    }`
   } else if (user?.photo_url?.startsWith('https://senpai.imgix.net')) {
     return user.photo_url
   }
