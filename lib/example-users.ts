@@ -56,6 +56,10 @@ export default [
     href: '/timsaval'
   },
   {
+    title: 'Ahmed Tokyo',
+    href: '/a-tokyo'
+  },
+  {
     title: 'Sadie',
     href: '/sincerelysadie'
   },
