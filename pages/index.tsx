@@ -26,7 +26,7 @@ export default function HomePage() {
 
       <section className={styles.heroSection}>
         <div className={styles.intro}>
-          <h1>Understand Your Clubhouse Social Graph</h1>
+          <h1>Explore Your Clubhouse Social Graph</h1>
 
           <h2>
             Gain insight into Clubhouse with powerful visualizations of your

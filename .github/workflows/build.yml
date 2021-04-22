@@ -6,6 +6,12 @@ jobs:
     strategy:
       matrix:
         node-version: [12.x, 14.x]
+    env:
+      SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
+      IMGIX_SECRET: ${{ secrets.IMGIX_SECRET }}
+      NEO4J_URI: ${{ secrets.NEO4J_URI }}
+      NEO4J_USER: ${{ secrets.NEO4J_USER }}
+      NEO4J_PASSWORD: ${{ secrets.NEO4J_PASSWORD }}
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js ${{ matrix.node-version }}

@@ -29,7 +29,7 @@ export const HeroCTA = () => {
         </Button>
       ) : (
         <Button colorScheme='blue' onClick={loginModal.onOpen}>
-          Log in with Clubhouse
+          👉 Explore your graph 👈
         </Button>
       )}
     </div>
