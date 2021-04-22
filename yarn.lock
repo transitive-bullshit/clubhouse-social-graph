@@ -1960,10 +1960,10 @@ clubhouse-client@^1.3.0:
     p-throttle "^4.1.1"
     uuid "^8.3.2"
 
-clubhouse-crawler@^1.3.2:
-  version "1.3.2"
-  resolved "https://registry.yarnpkg.com/clubhouse-crawler/-/clubhouse-crawler-1.3.2.tgz#d478ed2b3754c6617f9c987ef19731806d9c299a"
-  integrity sha512-gADeqr5RVkRwmS9D6eYCoQzuKukPTYOjsFi/sulkDst4h18rGc0hDAcNrIGGqCWs0hrbDLb3I4SDUr/KDnFD9Q==
+clubhouse-crawler@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/clubhouse-crawler/-/clubhouse-crawler-1.4.0.tgz#28931db0279f1cc6e5ecc8563652e21430a729e6"
+  integrity sha512-WwIEBmG8Ive4Ai+8XgfAo9X7q7aZLiyfbZRFfjIPHMikjl8tSIAfPIjpZcUzyNrRnPaT6AHReOEU0+dvepmWIg==
   dependencies:
     neo4j-driver "^4.2.3"
     p-map "^4.0.0"
