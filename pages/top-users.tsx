@@ -33,7 +33,7 @@ export const getStaticProps = async () => {
       try {
         session = driver.session({ defaultAccessMode: 'READ' })
         const users = (
-          await db.getUsers(session, { limit: 100 })
+          await db.getUsers(session, { orderBy: 'pagerank', limit: 100 })
         ).records.map((record) => convertNeo4jUser(record.get(0)))
         props.users = users.concat([
           // add one fake user at the end...
