@@ -26,18 +26,18 @@ This webapp is built using [Next.js](https://nextjs.org) deployed to [Vercel](ht
   - [x] Followers viz
   - [x] Following viz
   - [x] Invite chain viz
-  - [ ] Relationship viz `/[username]/relationship/[username]`
+  - [x] Relationship viz `/[username]/relationship/[username]`
   - [x] [Linkify](https://github.com/tasti/react-linkify) bios
 - User settings page `/[username]/settings`
   - [ ] Adjust viz settings
-  - [ ] Logout
+  - [x] Logout
 - Core visualization
   - [x] Navigate to user profiles
-  - [ ] Navigate to user relationship viz
+  - [x] Navigate to user relationship viz
   - [x] Add fallback profile photo
   - [x] Add info modal
   - [x] Add zoom in / out buttons
-  - [ ] Finalize approach to auth
+  - [x] Finalize approach to auth
 - [x] About page `/about`
 - [x] Data page `/data`
 - [x] Top users `/top-users`
