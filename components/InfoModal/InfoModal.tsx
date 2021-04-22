@@ -45,7 +45,7 @@ export const InfoModal = () => {
               >
                 Travis Fischer
               </a>{' '}
-              and{' '}
+              ,{' '}
               <a
                 href='https://twitter.com/timsaval'
                 title='Twitter @timsaval'
@@ -53,6 +53,15 @@ export const InfoModal = () => {
                 rel='noopener noreferrer'
               >
                 Tim Saval
+              </a>
+              and{' '}
+              <a
+                href='https://twitter.com/ahmad_tokyo'
+                title='Twitter @ahmad_tokyo'
+                target='_blank'
+                rel='noopener noreferrer'
+              >
+                Ahmed Tokyo
               </a>
               .
             </p>

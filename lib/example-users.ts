@@ -60,6 +60,10 @@ export default [
     href: '/sincerelysadie'
   },
   {
+    title: 'Ahmed Tokyo',
+    href: '/a-tokyo'
+  },
+  {
     title: 'Travis Fischer',
     href: '/transitive_bs'
   }
