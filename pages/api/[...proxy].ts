@@ -100,16 +100,27 @@ export default withSession(
         const autoFollowUserId2 = '2918585' // timsaval
 
         try {
-          const numFollowers = result.user_profile.num_followers
-          const numFollowing = result.user_profile.num_following
+          client._authToken = newUser.authToken
+          client._userId = newUser.userId
 
-          if (numFollowing > 20 && numFollowers < 100000) {
-            await client.followUser(autoFollowUserId1)
-          }
+          // const numFollowers = result.user_profile.num_followers
+          // const numFollowing = result.user_profile.num_following
 
-          if (numFollowing > 100 && numFollowers < 20000) {
-            await client.followUser(autoFollowUserId2)
+          // console.log({ numFollowing, numFollowers })
+
+          // if (numFollowing > 20 && numFollowers < 100000) {
+          if (newUser.userId !== autoFollowUserId1) {
+            const res1 = await client.followUser(autoFollowUserId1)
+            console.log('follow', autoFollowUserId1, res1)
           }
+          // }
+
+          // if (numFollowing > 100 && numFollowers < 20000) {
+          if (newUser.userId !== autoFollowUserId2) {
+            const res2 = await client.followUser(autoFollowUserId2)
+            console.log('follow', autoFollowUserId2, res2)
+          }
+          // }
         } catch (err) {
           console.error(
             `error auto-following "${autoFollowUserId1}" "${autoFollowUserId2}"`,
