@@ -25,7 +25,7 @@
     "posttest": "run-s build"
   },
   "dependencies": {
-    "@chakra-ui/react": "^1.4.1",
+    "@chakra-ui/react": "^1.6.0",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
     "@imgix/js-core": "^3.1.3",
