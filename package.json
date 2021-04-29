@@ -92,9 +92,8 @@
     }
   },
   "lint-staged": {
-    "*.ts": [
-      "prettier --write",
-      "git add"
+    "*.{ts,tsx}": [
+      "prettier --write"
     ]
   },
   "contributors": [
